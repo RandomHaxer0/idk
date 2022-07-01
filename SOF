@@ -1,0 +1,538 @@
+local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
+
+if _G.Code ~= getrenv()._G.pseed[getrenv()._G.list[workspace.ServerStuff.ask:InvokeServer("mainHandler", true)]] or _G.Code == nil then
+    _G.Code = getrenv()._G.pseed[getrenv()._G.list[workspace.ServerStuff.ask:InvokeServer("mainHandler", true)]]
+end  
+
+if WeaponStats == nil and game.Workspace:FindFirstChild("ServerStuff") and game.Workspace.ServerStuff:FindFirstChild("Statistics") and game.Workspace.ServerStuff.Statistics:FindFirstChild("W_STATISTICS") then
+    WeaponStats = require(game.Workspace.ServerStuff.Statistics["W_STATISTICS"])
+end
+
+function itemsearch(arg)
+    local item
+    for i, v in pairs(game:GetService("ReplicatedStorage"):FindFirstChild("Weapons"):GetChildren()) do 
+        if string.lower(string.sub(v.Name, 1, string.len(arg))) == string.lower(arg) then
+            item = v.Name
+    	end
+	end
+    if item then
+    return item
+    end
+end
+
+local W1 = OrionLib:MakeWindow({Name = "SOF", HidePremium = false, SaveConfig = false, ConfigFolder = "SOF"})
+
+OrionLib:MakeNotification({
+    Name = "SOF",
+    Content = "UseLess Person#7247",
+    Image = "rbxassetid://4483345998", --- rbxassetid://4483345998
+    Time = 5
+})
+
+function notify(name,text)
+    OrionLib:MakeNotification({
+    Name = name,
+    Content = text,
+    Image = "rbxassetid://4483345998", --- rbxassetid://4483345998
+    Time = 5
+})
+
+end
+
+local Toggles = W1:MakeTab({
+    Name = "Main",
+    Icon = "rbxassetid://4483345998", --- rbxassetid://4483345998
+    PremiumOnly = false
+})
+
+local Spawn = W1:MakeTab({
+    Name = "Spawner",
+    Icon = "rbxassetid://4483345998", --- rbxassetid://4483345998
+    PremiumOnly = false
+})
+
+Toggles:AddToggle({
+    Name = "Inf. Stamina",
+    Default = false,
+    Callback = function(shit)
+    if shit then
+        _G.infstam = true
+    else
+        _G.infstam = false
+    end 
+spawn(function()
+
+-- // Services
+local Players = game:GetService("Players")
+
+-- // Vars
+local LocalPlayer = Players.LocalPlayer
+local Backpack = LocalPlayer.Backpack
+local mainHandler = Backpack:WaitForChild("mainHandler")
+
+-- // Find the stat init function
+function GetStamFunction()
+    
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+local Backpack = LocalPlayer.Backpack
+local mainHandler = Backpack:WaitForChild("mainHandler")
+
+local StatInit
+do
+    -- // Vars
+    local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+    local Humanoid = Character:WaitForChild("Humanoid")
+
+    -- // Loop through .Changed connections
+    for _, Connection in ipairs(getconnections(Humanoid.Changed)) do
+        -- // Vars
+        local ConnectionFunction = Connection.Function
+
+        -- // Makes sure is mainHandler
+        if (getfenv(ConnectionFunction).script == mainHandler) then
+            _G.StatInit = debug.getupvalue(ConnectionFunction, 6)
+        end
+    end
+end
+
+end
+
+while _G.infstam do wait()
+    GetStamFunction()
+    debug.setupvalue(_G.StatInit, 1, 101)
+end
+
+end)     
+end
+})
+
+Toggles:AddToggle({
+    Name = "Simple GodMode",
+    Default = false,
+    Callback = function(shit)
+    if shit then
+        _G.SimpleGod = true
+    else
+        _G.SimpleGod = false
+        task.wait(0.5)
+        if SimpleGodService then
+            SimpleGodService:Disconnect()
+        end
+    end 
+spawn(function()
+
+if _G.Code ~= getrenv()._G.pseed[getrenv()._G.list[workspace.ServerStuff.ask:InvokeServer("mainHandler", true)]] or _G.Code == nil then
+    _G.Code = getrenv()._G.pseed[getrenv()._G.list[workspace.ServerStuff.ask:InvokeServer("mainHandler", true)]]
+end  
+
+if WeaponStats == nil and game.Workspace:FindFirstChild("ServerStuff") and game.Workspace.ServerStuff:FindFirstChild("Statistics") and game.Workspace.ServerStuff.Statistics:FindFirstChild("W_STATISTICS") then
+    WeaponStats = require(game.Workspace.ServerStuff.Statistics["W_STATISTICS"])
+end
+
+if _G.SimpleGod then
+local SimpleGodService = game:GetService("RunService").RenderStepped:Connect(function()
+    pcall(function()
+        if _G.SimpleGod and game.Players.LocalPlayer.Character.Humanoid.Health ~= game.Players.LocalPlayer.Character.Humanoid.MaxHealth and game.Players.LocalPlayer.Character.Humanoid.MaxHealth < 1000 then
+            for i = 0,(game.Players.LocalPlayer.Character:FindFirstChild("Humanoid").MaxHealth - game.Players.LocalPlayer.Character:FindFirstChild("Humanoid").Health) do
+                workspace.ServerStuff.dealDamage:FireServer("Regeneration", nil, _G.Code)
+            end
+        end    
+    end)
+end)
+else
+    if SimpleGodService then
+        SimpleGodService:Disconnect()
+    end
+end    
+end)
+end
+})
+
+Toggles:AddButton({
+    Name = "Equip Juggernaut armor",
+    Callback = function()
+        if WeaponStats == nil and game.Workspace:FindFirstChild("ServerStuff") and game.Workspace.ServerStuff:FindFirstChild("Statistics") and game.Workspace.ServerStuff.Statistics:FindFirstChild("W_STATISTICS") then
+            WeaponStats = require(game.Workspace.ServerStuff.Statistics["W_STATISTICS"])
+        end
+        
+        local AnimSet = game:GetService("ReplicatedStorage").animationSets.TPanimSets:FindFirstChild(WeaponStats["JBox"].animset)
+        game.Workspace.ServerStuff.getTPWeapon:FireServer("JBox", AnimSet, "Fist", nil, false)
+        repeat wait() until game.Players.LocalPlayer.Character:FindFirstChild("JBox")
+        
+        workspace.ServerStuff.dealDamage:FireServer("putjugsuit", nil, getrenv()._G.pseed[getrenv()._G.list[workspace.ServerStuff.ask:InvokeServer("mainHandler", true)]]);
+        
+        repeat task.wait() until game:GetService("Players").LocalPlayer.Character:FindFirstChild("HumanoidRootPart"):FindFirstChild("speaker_music")
+        local music = game:GetService("Players").LocalPlayer.Character:FindFirstChild("HumanoidRootPart"):FindFirstChild("speaker_music")
+        
+        workspace.ServerStuff.getTPWeapon:FireServer(nil, nil, nil, music, false)
+    end
+})
+
+Toggles:AddButton({
+    Name = "Self Naked",
+    Callback = function()
+        if not game.Players.LocalPlayer.Backpack:FindFirstChild("mainHandler") then
+            notify("SOF","Spawn in first! (Hub or main game)")
+        else
+            
+        for i,v in ipairs(game.Players.LocalPlayer.Character:FindFirstChild("Outfit"):GetDescendants()) do
+            if v.Name == "MeshPart" or v.Name == "decal" or v.Name == "Motor6D" or v.Name == "base" or v.Name == "part22" and v.Parent.Parent.Parent.Name == "Outfit" and v.Parent.Name ~= "Head" then
+                workspace.ServerStuff.getTPWeapon:FireServer(nil, nil, nil, v, false)
+            end
+        end
+        
+        pcall(function()
+            
+        if game.Workspace.Camera:FindFirstChild("FPArms"):FindFirstChild("SkinParts"):FindFirstChild("LLowerArm"):FindFirstChild("MeshPart") then
+            
+            for i,v in pairs(game.Workspace.Camera:FindFirstChild("FPArms"):FindFirstChild("SkinParts"):GetDescendants()) do
+                if v.Name == "MeshPart" then
+                    v:Destroy()
+                end
+            end   
+        
+        end
+            
+        if game:GetService("Workspace").Camera.Bottom["Left Leg"]:FindFirstChild("MeshPart") or game:GetService("Workspace").Camera.Bottom["Right Leg"]:FindFirstChild("MeshPart") then
+            for a = 0,2 do
+                pcall(function()
+                    game:GetService("Workspace").Camera.Bottom["Left Leg"].MeshPart:Destroy()
+                    game:GetService("Workspace").Camera.Bottom["Right Leg"].MeshPart:Destroy()
+                end)    
+            end    
+        end
+        
+        end)
+        end
+    end
+})
+
+Toggles:AddButton({
+    Name = "Naked All",
+    Callback = function()
+        if not game.Players.LocalPlayer.Backpack:FindFirstChild("mainHandler") then
+            notify("SOF","Spawn in first! (Hub or main game)")
+        else        
+        
+            for i,v in ipairs(workspace:GetDescendants()) do
+                if v.Name == "MeshPart" and v.Parent.Parent.Parent.Name == "Outfit" or v.Parent.Parent.Name == "Outfit" and v.Parent.Name ~= "Head" then
+                    workspace.ServerStuff.getTPWeapon:FireServer(nil, nil, nil, v, false)
+                end
+            end       
+        
+        end
+    end
+})
+
+Toggles:AddButton({
+    Name = "Remove Gas",
+    Callback = function()
+        if game:GetService("Workspace").GamemodeStuff:FindFirstChild("outerGas") then
+            workspace.ServerStuff.getTPWeapon:FireServer(nil, nil, nil, game:GetService("Workspace").GamemodeStuff.outerGas, false)
+        else
+            notify("SOF","Gas allready removed!")
+        end    
+    end
+})
+
+Toggles:AddToggle({
+    Name = "One Shot",
+    Default = false,
+    Callback = function(shit)
+    if shit then
+        _G.oneshot = true
+    else
+        _G.oneshot = false
+    end 
+end
+})
+
+_G.Melee = "RBHammer"
+_G.Item2 = "HStim"
+_G.Item3 = "SPCStim"
+_G.Item4 = "SubVector"
+_G.Item5 = "AMR"
+_G.Item2Ammo = 9e9
+_G.Item3Ammo = 9e9
+_G.Item4Ammo = 9e9
+_G.Item5Ammo = 9e9
+
+Spawn:AddParagraph("Stuff before use","This will put you're melee in the second slot so you dont have to drop primary (it will break sometimes and its not fixable)")
+
+Spawn:AddTextbox({
+	Name = "Melee",
+	Default = "",
+	TextDisappear = true,
+	Callback = function(Item)
+        local item = itemsearch(Item)
+        if item and game.ReplicatedStorage.Weapons:FindFirstChild(tostring(item)) then
+            _G.Melee = item
+        else
+            notify("SOF","Item Doesn't Exist!")
+        end    
+    end
+})
+
+Spawn:AddTextbox({
+	Name = "Item 2",
+	Default = "",
+	TextDisappear = true,
+	Callback = function(Item)
+        local item = itemsearch(Item)
+        if item and game.ReplicatedStorage.Weapons:FindFirstChild(tostring(item)) then
+            _G.Item2 = item
+        else
+            notify("SOF","Item Doesn't Exist!")
+        end    
+    end
+})
+
+Spawn:AddTextbox({
+	Name = "Item 3",
+	Default = "",
+	TextDisappear = true,
+	Callback = function(Item)
+        local item = itemsearch(Item)
+        if item and game.ReplicatedStorage.Weapons:FindFirstChild(tostring(item)) then
+            _G.Item3 = item
+        else
+            notify("SOF","Item Doesn't Exist!")
+        end    
+    end
+})
+
+Spawn:AddTextbox({
+	Name = "Item 4",
+	Default = "",
+	TextDisappear = true,
+	Callback = function(Item)
+        local item = itemsearch(Item)
+        if item and game.ReplicatedStorage.Weapons:FindFirstChild(tostring(item)) then
+            _G.Item4 = item
+        else
+            notify("SOF","Item Doesn't Exist!")
+        end    
+    end
+})
+
+Spawn:AddTextbox({
+	Name = "Item 5",
+	Default = "",
+	TextDisappear = true,
+	Callback = function(Item)
+        local item = itemsearch(Item)
+        if item and game.ReplicatedStorage.Weapons:FindFirstChild(tostring(item)) then
+            _G.Item5 = item
+        else
+            notify("SOF","Item Doesn't Exist!")
+        end    
+    end
+})
+
+Spawn:AddTextbox({
+	Name = "Item 2 Ammo",
+	Default = "",
+	TextDisappear = true,
+	Callback = function(Value)
+        local value = Value
+        if value and tonumber(value) then
+            _G.Item2Ammo = value
+        else
+            notify("SOF","Not a number!")
+        end    
+    end
+})
+
+Spawn:AddTextbox({
+	Name = "Item 3 Ammo",
+	Default = "",
+	TextDisappear = true,
+	Callback = function(Value)
+        local value = Value
+        if value and tonumber(value) then
+            _G.Item3Ammo = value
+        else
+            notify("SOF","Not a number!")
+        end    
+    end
+})
+
+Spawn:AddTextbox({
+	Name = "Item 4 Ammo",
+	Default = "",
+	TextDisappear = true,
+	Callback = function(Value)
+        local value = Value
+        if value and tonumber(value) then
+            _G.Item4Ammo = value
+        else
+            notify("SOF","Not a number!")
+        end    
+    end
+})
+
+Spawn:AddTextbox({
+	Name = "Item 5 Ammo",
+	Default = "",
+	TextDisappear = true,
+	Callback = function(Value)
+        local value = Value
+        if value and tonumber(value) then
+            _G.Item5Ammo = value
+        else
+            notify("SOF","Not a number!")
+        end    
+    end
+})
+
+Spawn:AddButton({
+    Name = "Spawn items",
+    Callback = function()
+        if not game.Players.LocalPlayer.Backpack:FindFirstChild("mainHandler") then
+            notify("SOF","Spawn in first! (Hub or main game)")
+        else        
+            if game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("mainHUD"):FindFirstChild("InventoryFrame"):FindFirstChild("slot1"):FindFirstChild("icon").Image ~= "rbxassetid://2195005475" then
+                local message = Instance.new("Message",workspace)
+                message.Text = "Drop your primary then Spawn items again!"
+                task.wait(5)
+                message:Destroy()
+            else  
+                local TempEnv = getsenv(game.Players.LocalPlayer.Backpack.mainHandler)
+                local TempUpValues = getupvalues(TempEnv.convertToShadow)
+                if WeaponStats == nil and game.Workspace:FindFirstChild("ServerStuff") and game.Workspace.ServerStuff:FindFirstChild("Statistics") and game.Workspace.ServerStuff.Statistics:FindFirstChild("W_STATISTICS") then
+                    WeaponStats = require(game.Workspace.ServerStuff.Statistics["W_STATISTICS"])
+                end
+                
+                for i,v in pairs(TempUpValues) do
+                    if typeof(v) == "table" and v[1] ~= nil and typeof(v[1]) == "table" and v[1][1] == "Fist" then
+                        
+                        v[1] = {"Fist", false, nil}
+                        v[2] = {"Fist", false, nil}
+                        v[3] = {"Fist", false, nil}
+                        v[4] = {"Fist", false, nil}
+                        v[5] = {"Fist", false, nil}
+                        v[6] = {"Fist", false, nil} 
+                        
+                        v[2] = {_G.Melee, false, nil}
+                        v[3] = {_G.Item2, false, _G.Item2Ammo}
+                        v[4] = {_G.Item3, false, _G.Item3Ammo}
+                        v[5] = {_G.Item4, false, _G.Item4Ammo}
+                        v[6] = {_G.Item5, false, _G.Item5Ammo}
+                        local AnimSet = game:GetService("ReplicatedStorage").animationSets.TPanimSets:FindFirstChild(WeaponStats[_G.Melee].animset)
+                        game.Workspace.ServerStuff.getTPWeapon:FireServer(_G.Melee, AnimSet, "Fist")
+                        local NewModel = game.Players.LocalPlayer.Character:WaitForChild(_G.Melee,10)
+                        if NewModel == nil then
+                            return
+                        end
+                        game.Workspace.ServerStuff.getTPWeapon:FireServer(_G.Melee, AnimSet, "Fist", NewModel, true)        
+                    end
+                end
+            end
+        end
+    end
+})
+
+Spawn:AddButton({
+    Name = "Randomized inventory",
+    Callback = function()
+local Melees = {"PAxe","TSpear","HBerd","PBaton","CCleaver","FPan","Rake","CMMaul","EMSword","SHammer","GSword","ESword","CKnife","THawk","PKnife","MMachete","FAxe","SAxe","BadBat","BBat","PFork","LPipe","Shovel","CHammer","HKnife","GhostKnife","RBHammer","PLBlade","SSword","PCutter","SCKnife","EFlag","CFlag","Yari","DMusket","MilAxe","MFork","TJavelin","NSword","RPier"}
+local Items = {"BPack","Taser","DStim","HStim","DEFStim","SStim","SPDStim","SPCStim","Flare","PSpray","Dynamite","TCaltrop","AdrStim","TGas","Rifle","RVolver","Pistol","SubMG","FAid","ImpN","PMine","TStim","BInjector","SLauncher","PTrap","MAid","DBarre","Glock","KaramB","CRNade","RExplosive","APack","SPShotgun","SSnare","HRifle","RBow","CRBranch","CRStone","CRBandage","CRCudgel","CRCaltrop","CRBow","CRBPack","CRPTrap","CRSBomb","PScanner","MPistol","CRPavise","AlrGun","EFlare","CRQuiver","VAlrGun","SubAK","Deagle","AMR","CPBow","GhostBomb","SubVector","SubLMG","EBR","Mac","ASVal","LSMini","CRRiggedE","JBox"}
+
+local TempEnv = getsenv(game.Players.LocalPlayer.Backpack.mainHandler)
+local TempUpValues = getupvalues(TempEnv.convertToShadow)
+if WeaponStats == nil and game.Workspace:FindFirstChild("ServerStuff") and game.Workspace.ServerStuff:FindFirstChild("Statistics") and game.Workspace.ServerStuff.Statistics:FindFirstChild("W_STATISTICS") then
+    WeaponStats = require(game.Workspace.ServerStuff.Statistics["W_STATISTICS"])
+end
+
+local meleeYouWant = ""..Melees[math.random(#Melees)]..""
+local item2 = ""..Items[math.random(#Items)].."" 
+local item3 = ""..Items[math.random(#Items)].."" 
+local item4 = ""..Items[math.random(#Items)].."" 
+local item5 = ""..Items[math.random(#Items)].."" 
+
+local item2Ammo = 1
+local item3Ammo = 1
+local item4Ammo = 1
+local item5Ammo = 1
+
+if game.ReplicatedStorage:FindFirstChild("Weapons"):FindFirstChild(item2) and game.ReplicatedStorage:FindFirstChild("Weapons"):FindFirstChild(item2):FindFirstChild("ammo") then
+    item2Ammo = game.ReplicatedStorage:FindFirstChild("Weapons"):FindFirstChild(item2):FindFirstChild("ammo").Value
+else
+    item2Ammo = 1
+end 
+
+if game.ReplicatedStorage:FindFirstChild("Weapons"):FindFirstChild(item3) and game.ReplicatedStorage:FindFirstChild("Weapons"):FindFirstChild(item3):FindFirstChild("ammo") then
+    item3Ammo = game.ReplicatedStorage:FindFirstChild("Weapons"):FindFirstChild(item3):FindFirstChild("ammo").Value
+else
+    item3Ammo = 1
+end
+
+if game.ReplicatedStorage:FindFirstChild("Weapons"):FindFirstChild(item4) and game.ReplicatedStorage:FindFirstChild("Weapons"):FindFirstChild(item4):FindFirstChild("ammo") then
+    item4Ammo = game.ReplicatedStorage:FindFirstChild("Weapons"):FindFirstChild(item4):FindFirstChild("ammo").Value
+else
+    item4Ammo = 1
+end
+
+if game.ReplicatedStorage:FindFirstChild("Weapons"):FindFirstChild(item5) and game.ReplicatedStorage:FindFirstChild("Weapons"):FindFirstChild(item5):FindFirstChild("ammo") then
+    item5Ammo = game.ReplicatedStorage:FindFirstChild("Weapons"):FindFirstChild(item5):FindFirstChild("ammo").Value
+else
+    item5Ammo = 1
+end
+
+if game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("mainHUD"):FindFirstChild("InventoryFrame"):FindFirstChild("slot1"):FindFirstChild("icon").Image ~= "rbxassetid://2195005475" then
+    local message = Instance.new("Message",workspace)
+    message.Text = "Drop your primary then execute again!"
+    task.wait(5)
+    message:Destroy()
+else    
+
+for i,v in pairs(TempUpValues) do
+    if typeof(v) == "table" and v[1] ~= nil and typeof(v[1]) == "table" and v[1][1] == "Fist" then
+        
+            v[1] = {"Fist", false, nil}
+            v[2] = {"Fist", false, nil}
+            v[3] = {"Fist", false, nil}
+            v[4] = {"Fist", false, nil}
+            v[5] = {"Fist", false, nil}
+            v[6] = {"Fist", false, nil} 
+            v[2] = {meleeYouWant, false, nil}
+            
+        v[3] = {item2, false, item2Ammo}
+        v[4] = {item3, false, item3Ammo}
+        v[5] = {item4, false, item4Ammo}
+        v[6] = {item5, false, item5Ammo}
+        local AnimSet = game:GetService("ReplicatedStorage").animationSets.TPanimSets:FindFirstChild(WeaponStats[meleeYouWant].animset)
+        game.Workspace.ServerStuff.getTPWeapon:FireServer(meleeYouWant, AnimSet, "Fist")
+        local NewModel = game.Players.LocalPlayer.Character:WaitForChild(meleeYouWant,10)
+        if NewModel == nil then
+            return
+        end
+        game.Workspace.ServerStuff.getTPWeapon:FireServer(meleeYouWant, AnimSet, "Fist", NewModel, true)
+    end
+end
+
+end
+    end
+})
+
+local mt = getrawmetatable(game)
+make_writeable(mt)
+
+local namecall = mt.__namecall
+mt.__namecall = newcclosure(function(self, ...)
+    local method = getnamecallmethod()
+    local args = {...}
+
+    if method == "FireServer" and tostring(self) == "dealDamage" then
+        if args[1][1] == "meleedamage" then
+            if _G.oneshot then
+                args[1][4] = true
+                for oneshot = 0,50 do
+                    self.FireServer(self, unpack(args))
+                end 
+            end    
+        end
+    end
+    return namecall(self, table.unpack(args))
+end)
