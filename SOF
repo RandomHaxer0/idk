@@ -4,6 +4,11 @@ if _G.Code ~= getrenv()._G.pseed[getrenv()._G.list[workspace.ServerStuff.ask:Inv
     _G.Code = getrenv()._G.pseed[getrenv()._G.list[workspace.ServerStuff.ask:InvokeServer("mainHandler", true)]]
 end  
 
+function Respawn()
+    workspace.ServerStuff.spawnPlayer:FireServer("hubbing")
+    workspace.ServerStuff.spawnPlayer:FireServer("respawncharacter")
+end    
+
 if WeaponStats == nil and game.Workspace:FindFirstChild("ServerStuff") and game.Workspace.ServerStuff:FindFirstChild("Statistics") and game.Workspace.ServerStuff.Statistics:FindFirstChild("W_STATISTICS") then
     WeaponStats = require(game.Workspace.ServerStuff.Statistics["W_STATISTICS"])
 end
@@ -238,6 +243,48 @@ Toggles:AddButton({
     end
 })
 
+Toggles:AddButton({
+    Name = "Fix Character (Will put back into menu)",
+    Callback = function()
+        Respawn()  
+    end
+})
+
+Toggles:AddButton({
+    Name = "Spawn in match (buggy, may break server)",
+    Callback = function()
+        function Respawn()
+            workspace.ServerStuff.spawnPlayer:FireServer("respawncharacter")
+        end  
+            
+        function Spawn()
+            if game:GetService("Workspace").GamemodeStuff:FindFirstChildWhichIsA("Folder") or game:GetService("Workspace").GamemodeStuff:FindFirstChildWhichIsA("MeshPart") then
+                Respawn()
+                wait(0.8)
+                workspace.ServerStuff.spawnPlayer:FireServer("spawn")
+                repeat task.wait() until game.Players.LocalPlayer.Character:FindFirstChild("Outfit")
+                game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame = CFrame.new(18.777990341186523, -2.5860984325408936, -9.264251708984375)
+                task.wait(2)
+                repeat task.wait() until game.Players.LocalPlayer.Character:FindFirstChild("Humanoid").Health == math.huge
+                Respawn()
+            else
+                rconsolewarn("a match is not ongoing")
+            end    
+        end
+        
+        if game.Players.LocalPlayer.PlayerGui:FindFirstChild("menuGui") then
+            if game.Players.LocalPlayer.PlayerGui:FindFirstChild("menuGui"):FindFirstChild("play").BackgroundColor3 == Color3.new(0,0,0) then
+                Spawn()
+            else
+                rconsolewarn("unready")
+            end
+        else
+            rconsolewarn("goto menu")
+        end    
+    end
+})
+
+
 Toggles:AddToggle({
     Name = "Auto Remove Gas On Win",
     Default = false,
@@ -269,6 +316,55 @@ Toggles:AddToggle({
     else
         _G.oneshot = false
     end 
+end
+})
+
+Toggles:AddToggle({
+    Name = "Kill Aura",
+    Default = false,
+    Callback = function(shit)
+    if shit then
+        _G.KillAura = true
+    else
+        _G.KillAura = false
+    end 
+    spawn(function()  
+        while _G.KillAura do wait()
+        pcall(function()
+        for i,v in pairs(game.Players:GetPlayers()) do
+        
+            local lp = game.Players.LocalPlayer
+            local character = v.Character
+            local charactername = v.Name
+                
+                if (lp.Character and lp.Character:FindFirstChild("Head") and character:FindFirstChild("Head") and v ~= game.Players.LocalPlayer) then
+                    local mag = (v.Character.Head.Position - lp.Character.Head.Position).Magnitude
+                          if mag < 15  then
+        
+            local ohTable1 = {
+            	[1] = "meleedamage",
+            	[2] = character,
+            	[3] = 33,
+            	[4] = true,
+            	[5] = "SHammer",
+            	[6] = false,
+            	[7] = false,
+            	[8] = {
+            		["rustic"] = true,
+            		["leg"] = true,
+            		["tough"] = true
+            	}
+            }
+            local ohNil2 = nil
+            local ohNumber3 = _G.Code
+            
+            workspace.ServerStuff.dealDamage:FireServer(ohTable1, ohNil2, ohNumber3)
+        end
+        end
+        end
+        end)
+        end
+    end)    
 end
 })
 
