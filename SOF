@@ -268,7 +268,7 @@ Toggles:AddButton({
                 repeat task.wait() until game.Players.LocalPlayer.Character:FindFirstChild("Humanoid").Health == math.huge
                 Respawn()
             else
-                rconsolewarn("a match is not ongoing")
+                notify("SOF","a match is not ongoing")
             end    
         end
         
@@ -276,10 +276,10 @@ Toggles:AddButton({
             if game.Players.LocalPlayer.PlayerGui:FindFirstChild("menuGui"):FindFirstChild("play").BackgroundColor3 == Color3.new(0,0,0) then
                 Spawn()
             else
-                rconsolewarn("unready")
+                notify("SOF","unready")
             end
         else
-            rconsolewarn("goto menu")
+            notify("SOF","goto menu")
         end    
     end
 })
@@ -320,6 +320,18 @@ end
 })
 
 Toggles:AddToggle({
+    Name = "BackStabs Only",
+    Default = false,
+    Callback = function(shit)
+    if shit then
+        _G.backstab = true
+    else
+        _G.backstab = false
+    end 
+end
+})
+
+Toggles:AddToggle({
     Name = "Kill Aura",
     Default = false,
     Callback = function(shit)
@@ -329,7 +341,7 @@ Toggles:AddToggle({
         _G.KillAura = false
     end 
     spawn(function()  
-        while _G.KillAura do wait()
+        while _G.KillAura do wait(0.1)
         pcall(function()
         for i,v in pairs(game.Players:GetPlayers()) do
         
@@ -339,7 +351,7 @@ Toggles:AddToggle({
                 
                 if (lp.Character and lp.Character:FindFirstChild("Head") and character:FindFirstChild("Head") and v ~= game.Players.LocalPlayer) then
                     local mag = (v.Character.Head.Position - lp.Character.Head.Position).Magnitude
-                          if mag < 15  then
+                          if mag < 15 and character:FindFirstChild("Humanoid").Health > 0 then
         
             local ohTable1 = {
             	[1] = "meleedamage",
@@ -399,7 +411,7 @@ Toggles:AddToggle({
         _G.AutoShove = false
     end 
     spawn(function()  
-        while _G.AutoShove do wait()
+        while _G.AutoShove do wait(0.05)
         pcall(function()
         for i,v in pairs(game.Players:GetPlayers()) do
         
@@ -409,7 +421,7 @@ Toggles:AddToggle({
                 
                 if (lp.Character and lp.Character:FindFirstChild("Head") and character:FindFirstChild("Head") and v ~= game.Players.LocalPlayer) then
                     local mag = (v.Character.Head.Position - lp.Character.Head.Position).Magnitude
-                          if mag < 15  then
+                          if mag < 15 and character:FindFirstChild("Humanoid").Health > 0 then
         
             local ohTable1 = {
             	[1] = "meleedamage",
@@ -446,7 +458,7 @@ Toggles:AddButton({
         for cheeks = 0,50 do
         
         for i,v in pairs(game.Players:GetPlayers()) do
-            if v and v ~= game.Players.LocalPlayer then
+            if v and v ~= game.Players.LocalPlayer and v.Character:FindFirstChild("Humanoid").Health > 0 then
                 for ass = 0,500 do
                     local ohTable1 = {
                         [1] = "meleedamage",
@@ -765,6 +777,24 @@ mt.__namecall = newcclosure(function(self, ...)
                 for oneshot = 0,50 do
                     self.FireServer(self, unpack(args))
                 end 
+            end    
+        end
+    end
+    return namecall(self, table.unpack(args))
+end)
+
+local mt = getrawmetatable(game)
+make_writeable(mt)
+
+local namecall = mt.__namecall
+mt.__namecall = newcclosure(function(self, ...)
+    local method = getnamecallmethod()
+    local args = {...}
+
+    if method == "FireServer" and tostring(self) == "dealDamage" then
+        if args[1][1] == "meleedamage" and args[1][3] ~= "shove" then
+            if _G.backstab then
+                args[1][4] = true
             end    
         end
     end
