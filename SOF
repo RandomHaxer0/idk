@@ -99,8 +99,10 @@ end
 end
 
 while _G.infstam do wait()
-    GetStamFunction()
-    debug.setupvalue(_G.StatInit, 1, 101)
+    pcall(function()
+        GetStamFunction()
+        debug.setupvalue(_G.StatInit, 1, 101)
+    end)    
 end
 
 end)     
@@ -237,6 +239,28 @@ Toggles:AddButton({
 })
 
 Toggles:AddToggle({
+    Name = "Auto Remove Gas On Win",
+    Default = false,
+    Callback = function(shit)
+    if shit then
+        _G.AutoGasRemoveOnWin = true
+    else
+        _G.AutoGasRemoveOnWin = false
+    end 
+    spawn(function()    
+        _G.AutoGasRemoveOnWin = true
+        while _G.AutoGasRemoveOnWin do wait(0.5)
+            if game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("cheer") and _G.AutoGasRemoveOnWin then
+                if game:GetService("Workspace").GamemodeStuff:FindFirstChild("outerGas") and _G.AutoGasRemoveOnWin then
+                    workspace.ServerStuff.getTPWeapon:FireServer(nil, nil, nil, game:GetService("Workspace").GamemodeStuff.outerGas, false)
+                end
+            end
+        end  
+    end)
+end
+})
+
+Toggles:AddToggle({
     Name = "One Shot",
     Default = false,
     Callback = function(shit)
@@ -245,6 +269,118 @@ Toggles:AddToggle({
     else
         _G.oneshot = false
     end 
+end
+})
+
+Toggles:AddToggle({
+    Name = "Auto Parry",
+    Default = false,
+    Callback = function(shit)
+    if shit then
+        _G.InfBlock = true
+    else
+        _G.InfBlock = false
+        task.wait()
+        workspace.ServerStuff.initiateblock:FireServer(_G.Code, false)
+    end 
+    spawn(function()
+        while _G.InfBlock do task.wait()
+            pcall(function()
+                workspace.ServerStuff.initiateblock:FireServer(_G.Code, true)
+            end)
+        end
+    end)    
+end
+})
+
+Toggles:AddToggle({
+    Name = "Auto Shove",
+    Default = false,
+    Callback = function(shit)
+    if shit then
+        _G.AutoShove = true
+    else
+        _G.AutoShove = false
+    end 
+    spawn(function()  
+        while _G.AutoShove do wait()
+        pcall(function()
+        for i,v in pairs(game.Players:GetPlayers()) do
+        
+            local lp = game.Players.LocalPlayer
+            local character = v.Character
+            local charactername = v.Name
+                
+                if (lp.Character and lp.Character:FindFirstChild("Head") and character:FindFirstChild("Head") and v ~= game.Players.LocalPlayer) then
+                    local mag = (v.Character.Head.Position - lp.Character.Head.Position).Magnitude
+                          if mag < 15  then
+        
+            local ohTable1 = {
+            	[1] = "meleedamage",
+            	[2] = character,
+            	[3] = "shove",
+            	[4] = false,
+            	[5] = "Fist",
+            	[6] = false,
+            	[7] = false,
+            	[8] = {
+            		["rustic"] = true,
+            		["leg"] = true,
+            		["tough"] = true
+            	}
+            }
+            local ohNil2 = nil
+            local ohNumber3 = _G.Code
+            
+            workspace.ServerStuff.dealDamage:FireServer(ohTable1, ohNil2, ohNumber3)
+        end
+        end
+        end
+        end)
+        end
+    end)    
+end
+})
+
+Toggles:AddButton({
+    Name = "Alot of rep (ban risk)",
+    Callback = function()
+        function L()
+        
+        for cheeks = 0,50 do
+        
+        for i,v in pairs(game.Players:GetPlayers()) do
+            if v and v ~= game.Players.LocalPlayer then
+                for ass = 0,500 do
+                    local ohTable1 = {
+                        [1] = "meleedamage",
+                        [2] = v.Character,
+                        [3] = 14,
+                        [4] = true,
+                        [5] = "Fist",
+                        [6] = false,
+                        [7] = false,
+                        [8] = {
+                            ["rustic"] = true,
+                            ["leg"] = true,
+                            ["tough"] = true
+                        }
+                    }
+                    local ohNil2 = nil
+                    local ohNumber3 = getrenv()._G.pseed[getrenv()._G.list[workspace.ServerStuff.ask:InvokeServer("mainHandler", true)]]
+                        
+                    workspace.ServerStuff.dealDamage:FireServer(ohTable1, ohNil2, ohNumber3)
+                end
+            end
+        end
+        
+        end
+        
+        end
+        
+    for Lers = 0,2 do
+        L()
+    end    
 end
 })
 
@@ -436,8 +572,8 @@ Spawn:AddButton({
 Spawn:AddButton({
     Name = "Randomized inventory",
     Callback = function()
-local Melees = {"PAxe","TSpear","HBerd","PBaton","CCleaver","FPan","Rake","CMMaul","EMSword","SHammer","GSword","ESword","CKnife","THawk","PKnife","MMachete","FAxe","SAxe","BadBat","BBat","PFork","LPipe","Shovel","CHammer","HKnife","GhostKnife","RBHammer","PLBlade","SSword","PCutter","SCKnife","EFlag","CFlag","Yari","DMusket","MilAxe","MFork","TJavelin","NSword","RPier"}
-local Items = {"BPack","Taser","DStim","HStim","DEFStim","SStim","SPDStim","SPCStim","Flare","PSpray","Dynamite","TCaltrop","AdrStim","TGas","Rifle","RVolver","Pistol","SubMG","FAid","ImpN","PMine","TStim","BInjector","SLauncher","PTrap","MAid","DBarre","Glock","KaramB","CRNade","RExplosive","APack","SPShotgun","SSnare","HRifle","RBow","CRBranch","CRStone","CRBandage","CRCudgel","CRCaltrop","CRBow","CRBPack","CRPTrap","CRSBomb","PScanner","MPistol","CRPavise","AlrGun","EFlare","CRQuiver","VAlrGun","SubAK","Deagle","AMR","CPBow","GhostBomb","SubVector","SubLMG","EBR","Mac","ASVal","LSMini","CRRiggedE","JBox"}
+local Melees = {"PAxe","TSpear","HBerd","PBaton","CCleaver","FPan","Rake","CMMaul","EMSword","SHammer","GSword","ESword","CKnife","THawk","PKnife","MMachete","FAxe","SAxe","BadBat","BBat","PFork","LPipe","Shovel","CHammer","KaramB","HKnife","GhostKnife","RBHammer","PLBlade","SSword","PCutter","SCKnife","EFlag","CFlag","Yari","DMusket","MilAxe","MFork","TJavelin","NSword","RPier","CRCudgel"}
+local Items = {"BPack","Taser","DStim","HStim","DEFStim","SStim","SPDStim","SPCStim","Flare","PSpray","Dynamite","TCaltrop","AdrStim","TGas","Rifle","RVolver","Pistol","SubMG","FAid","ImpN","PMine","TStim","BInjector","SLauncher","PTrap","MAid","DBarre","Glock","CRNade","RExplosive","APack","SPShotgun","SSnare","HRifle","RBow","CRBranch","CRStone","CRBandage","CRCaltrop","CRBow","CRBPack","CRPTrap","CRSBomb","PScanner","MPistol","CRPavise","AlrGun","EFlare","CRQuiver","VAlrGun","SubAK","Deagle","AMR","CPBow","GhostBomb","SubVector","SubLMG","EBR","Mac","ASVal","LSMini","CRRiggedE","JBox"}
 
 local TempEnv = getsenv(game.Players.LocalPlayer.Backpack.mainHandler)
 local TempUpValues = getupvalues(TempEnv.convertToShadow)
@@ -525,9 +661,11 @@ mt.__namecall = newcclosure(function(self, ...)
     local args = {...}
 
     if method == "FireServer" and tostring(self) == "dealDamage" then
-        if args[1][1] == "meleedamage" then
+        if args[1][1] == "meleedamage" and args[1][3] ~= "shove" then
             if _G.oneshot then
+                args[1][3] = 33
                 args[1][4] = true
+                args[1][5] = "SHammer"
                 for oneshot = 0,50 do
                     self.FireServer(self, unpack(args))
                 end 
