@@ -24,7 +24,7 @@ end
 
 function Hub()
     workspace.ServerStuff.spawnPlayer:FireServer("hubbing")
-end 
+end    
 
 if WeaponStats == nil and game.Workspace:FindFirstChild("ServerStuff") and game.Workspace.ServerStuff:FindFirstChild("Statistics") and game.Workspace.ServerStuff.Statistics:FindFirstChild("W_STATISTICS") then
     WeaponStats = require(game.Workspace.ServerStuff.Statistics["W_STATISTICS"])
@@ -346,53 +346,6 @@ Toggles:AddButton({
     end
 })
 
-Match:AddParagraph("Some Stuff Before Use","Using these will disable inf. stamina so re enable it if you are using it")
-
-Match:AddButton({
-    Name = "Fix Character (Wont fix permanent death screen)",
-    Callback = function()
-        Hub()
-        repeat task.wait() until game.Players.LocalPlayer.Character:FindFirstChild("Outfit")
-        game.Players.LocalPlayer.start.Value = "rayzen"
-        Respawn()
-        repeat task.wait() until not game.Players.LocalPlayer.Character:FindFirstChild("Outfit")
-        Hub()
-        game.Players.LocalPlayer.start.Value = ""
-        repeat task.wait() until game.Players.LocalPlayer.Character:FindFirstChild("Outfit")
-        Respawn()
-    end
-})
-
-function Spawn()
-    if game:GetService("Workspace").GamemodeStuff:FindFirstChildWhichIsA("Folder") or game:GetService("Workspace").GamemodeStuff:FindFirstChildWhichIsA("MeshPart") then
-        Hub()
-        repeat task.wait() until game.Players.LocalPlayer.Character:FindFirstChild("Outfit")
-        game.Players.LocalPlayer.start.Value = "rayzen"
-        Respawn()
-        repeat task.wait() until not game.Players.LocalPlayer.Character:FindFirstChild("Outfit")
-        Hub()
-        repeat task.wait() until game.Players.LocalPlayer.Character:FindFirstChild("Outfit")
-        game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame = CFrame.new(18.777990341186523, -2.5860984325408936, -9.264251708984375)
-    else
-        notify("SOF","a match is not ongoing")
-    end    
-end
-
-Match:AddButton({
-    Name = "Spawn in match (buggy, may break server)",
-    Callback = function()
-        if game.Players.LocalPlayer.PlayerGui:FindFirstChild("menuGui") then
-            if game.Players.LocalPlayer.PlayerGui:FindFirstChild("menuGui"):FindFirstChild("play").BackgroundColor3 == Color3.new(0,0,0) then
-                Spawn()
-            else
-                notify("SOF","unready")
-            end
-        else
-            notify("SOF","goto menu")
-        end    
-    end
-})
-
 Toggles:AddToggle({
     Name = "Auto Remove Gas On Win",
     Default = false,
@@ -643,11 +596,11 @@ Toggles:AddToggle({
         _G.InfBlock = true
     else
         _G.InfBlock = false
-        wait()
+        task.wait()
         workspace.ServerStuff.initiateblock:FireServer(_G.Code, false)
     end 
     spawn(function()
-        while _G.InfBlock do wait(0.05)
+        while _G.InfBlock do task.wait(0.05)
             pcall(function()
                 workspace.ServerStuff.initiateblock:FireServer(_G.Code, true)
             end)
@@ -705,7 +658,6 @@ Toggles:AddToggle({
 end
 })
 
-if _G.assholesbitch then
 Toggles:AddButton({
     Name = "Alot of rep (ban risk)",
     Callback = function()
@@ -747,7 +699,6 @@ Toggles:AddButton({
     end    
 end
 })
-end
 
 _G.Melee = "RBHammer"
 _G.Item2 = "HStim"
@@ -1017,7 +968,52 @@ end
     end
 })
 
-OrionLib:Init()
+Match:AddParagraph("Some Stuff Before Use","Using these will disable inf. stamina so re enable it if you are using it")
+
+Match:AddButton({
+    Name = "Fix Character (Wont fix permanent death screen)",
+    Callback = function()
+        Hub()
+        repeat task.wait() until game.Players.LocalPlayer.Character:FindFirstChild("Outfit")
+        game.Players.LocalPlayer.start.Value = "rayzen"
+        Respawn()
+        repeat task.wait() until not game.Players.LocalPlayer.Character:FindFirstChild("Outfit")
+        Hub()
+        game.Players.LocalPlayer.start.Value = ""
+        repeat task.wait() until game.Players.LocalPlayer.Character:FindFirstChild("Outfit")
+        Respawn()
+    end
+})
+
+function Spawn()
+    if game:GetService("Workspace").GamemodeStuff:FindFirstChildWhichIsA("Folder") or game:GetService("Workspace").GamemodeStuff:FindFirstChildWhichIsA("MeshPart") then
+        Hub()
+        repeat task.wait() until game.Players.LocalPlayer.Character:FindFirstChild("Outfit")
+        game.Players.LocalPlayer.start.Value = "rayzen"
+        Respawn()
+        repeat task.wait() until not game.Players.LocalPlayer.Character:FindFirstChild("Outfit")
+        Hub()
+        repeat task.wait() until game.Players.LocalPlayer.Character:FindFirstChild("Outfit")
+        game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame = CFrame.new(18.777990341186523, -2.5860984325408936, -9.264251708984375)
+    else
+        notify("SOF","a match is not ongoing")
+    end    
+end
+
+Match:AddButton({
+    Name = "Spawn in match (buggy, may break server)",
+    Callback = function()
+        if game.Players.LocalPlayer.PlayerGui:FindFirstChild("menuGui") then
+            if game.Players.LocalPlayer.PlayerGui:FindFirstChild("menuGui"):FindFirstChild("play").BackgroundColor3 == Color3.new(0,0,0) then
+                Spawn()
+            else
+                notify("SOF","unready")
+            end
+        else
+            notify("SOF","goto menu")
+        end    
+    end
+})
 
 spawn(function()
 
