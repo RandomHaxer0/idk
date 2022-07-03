@@ -222,8 +222,31 @@ end)
 end
 })
 
+Toggles:AddToggle({
+    Name = "Anti Shove (Might not work correctly)",
+    Default = false,
+    Callback = function(shit)
+    if shit then
+        _G.AntiShove = true
+    else
+        _G.AntiShove = false
+        wait(0.1)
+        game.Players.LocalPlayer:FindFirstChild("start").Value = ""
+    end
+    
+    spawn(function()
+        while _G.AntiShove do task.wait()
+            if game.Players.LocalPlayer.Character:FindFirstChild("Outfit") and game.Players.LocalPlayer:FindFirstChild("start").Value ~= "emperor" then
+                game.Players.LocalPlayer:FindFirstChild("start").Value = "emperor"
+            end
+        end
+    end)
+                    
+end
+})
+
 Toggles:AddButton({
-    Name = "Equip Juggernaut armor",
+    Name = "Equip Juggernaut armor (no music)",
     Callback = function()
         if WeaponStats == nil and game.Workspace:FindFirstChild("ServerStuff") and game.Workspace.ServerStuff:FindFirstChild("Statistics") and game.Workspace.ServerStuff.Statistics:FindFirstChild("W_STATISTICS") then
             WeaponStats = require(game.Workspace.ServerStuff.Statistics["W_STATISTICS"])
@@ -235,10 +258,24 @@ Toggles:AddButton({
         
         workspace.ServerStuff.dealDamage:FireServer("putjugsuit", nil, getrenv()._G.pseed[getrenv()._G.list[workspace.ServerStuff.ask:InvokeServer("mainHandler", true)]]);
         
-        repeat wait() until game:GetService("Players").LocalPlayer.Character:FindFirstChild("HumanoidRootPart"):FindFirstChild("speaker_music")
-        local music = game:GetService("Players").LocalPlayer.Character:FindFirstChild("HumanoidRootPart"):FindFirstChild("speaker_music")
+        local music = game:GetService("Players").LocalPlayer.Character:FindFirstChild("HumanoidRootPart"):WaitForChild("speaker_music")
         
         workspace.ServerStuff.getTPWeapon:FireServer(nil, nil, nil, music, false)
+    end
+})
+
+Toggles:AddButton({
+    Name = "Equip Juggernaut armor (music)",
+    Callback = function()
+        if WeaponStats == nil and game.Workspace:FindFirstChild("ServerStuff") and game.Workspace.ServerStuff:FindFirstChild("Statistics") and game.Workspace.ServerStuff.Statistics:FindFirstChild("W_STATISTICS") then
+            WeaponStats = require(game.Workspace.ServerStuff.Statistics["W_STATISTICS"])
+        end
+        
+        local AnimSet = game:GetService("ReplicatedStorage").animationSets.TPanimSets:FindFirstChild(WeaponStats["JBox"].animset)
+        game.Workspace.ServerStuff.getTPWeapon:FireServer("JBox", AnimSet, "Fist", nil, false)
+        repeat wait() until game.Players.LocalPlayer.Character:FindFirstChild("JBox")
+        
+        workspace.ServerStuff.dealDamage:FireServer("putjugsuit", nil, getrenv()._G.pseed[getrenv()._G.list[workspace.ServerStuff.ask:InvokeServer("mainHandler", true)]]);
     end
 })
 
