@@ -312,7 +312,7 @@ Toggles:AddButton({
 Match:AddParagraph("Some Stuff Before Use","Using these will disable inf. stamina so re enable it if you are using it")
 
 Match:AddButton({
-    Name = "Fix Character (Will put back into menu, wont fix perm death screen)",
+    Name = "Fix Character (Wont fix permanent death screen)",
     Callback = function()
         Hub()
         repeat task.wait() until game.Players.LocalPlayer.Character:FindFirstChild("Outfit")
