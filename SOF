@@ -82,7 +82,7 @@ local Spawn = W1:MakeTab({
 })
 
 local Match = W1:MakeTab({
-    Name = "Misc.",
+    Name = "Match Stuff",
     Icon = "rbxassetid://4483345998", --- rbxassetid://4483345998
     PremiumOnly = false
 })
@@ -494,10 +494,10 @@ Misc:AddButton({
 Misc:AddParagraph("DESTROY GUI","This button will kill the gui")
 
 Misc:AddButton({
-    Name = "Kill Gui"
+    Name = "Kill Gui",
     Callback = function()
-        OrionLib:Destroy()
-    end    
+        OrionLib:Destroy()  
+    end
 })
 
 Toggles:AddToggle({
