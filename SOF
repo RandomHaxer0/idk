@@ -1,4 +1,16 @@
+pcall(function()
+
 local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
+
+local vomiting = {}
+
+spawn(function()
+    while true do task.wait(0.1)
+        for i,v in pairs(vomiting) do
+            workspace.ServerStuff.applyGore:FireServer("vomit", game.Players:FindFirstChild(v).Character)
+        end    
+    end  
+end)
 
 if _G.Code ~= getrenv()._G.pseed[getrenv()._G.list[workspace.ServerStuff.ask:InvokeServer("mainHandler", true)]] or _G.Code == nil then
     _G.Code = getrenv()._G.pseed[getrenv()._G.list[workspace.ServerStuff.ask:InvokeServer("mainHandler", true)]]
@@ -16,6 +28,18 @@ end
 function itemsearch(arg)
     local item
     for i, v in pairs(game:GetService("ReplicatedStorage"):FindFirstChild("Weapons"):GetChildren()) do 
+        if string.lower(string.sub(v.Name, 1, string.len(arg))) == string.lower(arg) then
+            item = v.Name
+    	end
+	end
+    if item then
+    return item
+    end
+end
+
+function playersearch(arg)
+    local item
+    for i, v in pairs(game:GetService("Players"):GetPlayers()) do 
         if string.lower(string.sub(v.Name, 1, string.len(arg))) == string.lower(arg) then
             item = v.Name
     	end
@@ -52,6 +76,12 @@ local Toggles = W1:MakeTab({
 
 local Spawn = W1:MakeTab({
     Name = "Spawner",
+    Icon = "rbxassetid://4483345998", --- rbxassetid://4483345998
+    PremiumOnly = false
+})
+
+local Misc = W1:MakeTab({
+    Name = "Misc.",
     Icon = "rbxassetid://4483345998", --- rbxassetid://4483345998
     PremiumOnly = false
 })
@@ -264,9 +294,6 @@ Toggles:AddButton({
                 workspace.ServerStuff.spawnPlayer:FireServer("spawn")
                 repeat task.wait() until game.Players.LocalPlayer.Character:FindFirstChild("Outfit")
                 game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame = CFrame.new(18.777990341186523, -2.5860984325408936, -9.264251708984375)
-                task.wait(2)
-                repeat task.wait() until game.Players.LocalPlayer.Character:FindFirstChild("Humanoid").Health == math.huge
-                Respawn()
             else
                 notify("SOF","a match is not ongoing")
             end    
@@ -305,6 +332,73 @@ Toggles:AddToggle({
         end  
     end)
 end
+})
+
+Misc:AddTextbox({
+	Name = "Vomit Screen Player",
+	Default = "",
+	TextDisappear = true,
+	Callback = function(player)
+        local item = playersearch(player)
+        if item and game.Players:FindFirstChild(tostring(item)) then
+            table.insert(vomiting, tostring(item))
+            for i,v in pairs(vomiting) do
+                notify("SOF vomiting players", v)
+            end    
+        else
+            notify("SOF","Player Doesn't Exist!")
+        end    
+    end
+})
+
+Misc:AddTextbox({
+	Name = "UnVomit Screen Player",
+	Default = "",
+	TextDisappear = true,
+	Callback = function(player)
+        if table.find(vomiting, playersearch(player)) then
+            table.remove(vomiting, table.find(vomiting, playersearch(player)))
+            for i,v in pairs(vomiting) do
+                notify("SOF vomiting players", v)
+            end             
+        elseif table.find(vomiting, tostring(player)) then
+            table.remove(vomiting, table.find(vomiting, tostring(player)))
+            for i,v in pairs(vomiting) do
+                notify("SOF vomiting players", v)
+            end 
+        else
+            notify("SOF","Player is not vomiting")
+        end    
+    end
+})
+
+Misc:AddButton({
+    Name = "UnVomit All",
+    Callback = function()
+        local vomiting = {} 
+    end
+})
+
+Misc:AddButton({
+    Name = "Vomit All",
+    Callback = function()
+        for i,v in pairs(game.Players:GetPlayers()) do
+            if v and v.Character then
+                table.insert(vomiting, tostring(v))
+            end
+        end    
+    end
+})
+
+Misc:AddButton({
+    Name = "Vomit Others",
+    Callback = function()
+        for i,v in pairs(game.Players:GetPlayers()) do
+            if v and v.Character and v ~= game.Players.LocalPlayer then
+                table.insert(vomiting, tostring(v))
+            end
+        end    
+    end
 })
 
 Toggles:AddToggle({
@@ -380,6 +474,27 @@ Toggles:AddToggle({
 end
 })
 
+function GetTarget()
+    -- Variables
+    local Distance = 10
+    local Closest = false
+    -- Go Through Players
+    for _, A_1 in next, game.Players:GetPlayers() do
+        local Char = A_1.Character
+        -- Player Check
+        if Char and A_1 ~= game.Players.LocalPlayer and Char:FindFirstChild("Head") and Char:FindFirstChild("Humanoid") and Char.Humanoid.Health > 0 and not Char:FindFirstChild("ForceField") then
+            -- Team Check
+                -- Distance Check
+            local New_Distance = game.Players.LocalPlayer:DistanceFromCharacter(Char.Head.Position)
+            if New_Distance < Distance then
+                Distance = New_Distance
+                Closest = Char.HumanoidRootPart.Position
+            end
+        end
+    end
+    return Closest
+end
+
 Toggles:AddToggle({
     Name = "Auto Parry",
     Default = false,
@@ -392,7 +507,7 @@ Toggles:AddToggle({
         workspace.ServerStuff.initiateblock:FireServer(_G.Code, false)
     end 
     spawn(function()
-        while _G.InfBlock do task.wait()
+        while _G.InfBlock do task.wait(0.05)
             pcall(function()
                 workspace.ServerStuff.initiateblock:FireServer(_G.Code, true)
             end)
@@ -760,6 +875,10 @@ end
     end
 })
 
+spawn(function()
+
+if not _G.AllreadyNameCalled then
+_G.AllreadyNameCalled = true
 local mt = getrawmetatable(game)
 make_writeable(mt)
 
@@ -799,4 +918,9 @@ mt.__namecall = newcclosure(function(self, ...)
         end
     end
     return namecall(self, table.unpack(args))
+end)
+
+end
+end)
+
 end)
