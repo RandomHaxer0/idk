@@ -20,7 +20,11 @@ end
 
 function Respawn()
     workspace.ServerStuff.spawnPlayer:FireServer("respawncharacter")
-end    
+end 
+
+function Hub()
+    workspace.ServerStuff.spawnPlayer:FireServer("hubbing")
+end 
 
 if WeaponStats == nil and game.Workspace:FindFirstChild("ServerStuff") and game.Workspace.ServerStuff:FindFirstChild("Statistics") and game.Workspace.ServerStuff.Statistics:FindFirstChild("W_STATISTICS") then
     WeaponStats = require(game.Workspace.ServerStuff.Statistics["W_STATISTICS"])
@@ -308,31 +312,38 @@ Toggles:AddButton({
 Match:AddParagraph("Some Stuff Before Use","Using these will disable inf. stamina so re enable it if you are using it")
 
 Match:AddButton({
-    Name = "Fix Character (Will put back into menu)",
+    Name = "Fix Character (Will put back into menu, wont fix perm death screen)",
     Callback = function()
-        Respawn()  
+        Hub()
+        repeat task.wait() until game.Players.LocalPlayer.Character:FindFirstChild("Outfit")
+        game.Players.LocalPlayer.start.Value = "rayzen"
+        Respawn()
+        repeat task.wait() until not game.Players.LocalPlayer.Character:FindFirstChild("Outfit")
+        Hub()
+        game.Players.LocalPlayer.start.Value = ""
+        repeat task.wait() until game.Players.LocalPlayer.Character:FindFirstChild("Outfit")
+        Respawn()
     end
 })
+
+function Spawn()
+    if game:GetService("Workspace").GamemodeStuff:FindFirstChildWhichIsA("Folder") or game:GetService("Workspace").GamemodeStuff:FindFirstChildWhichIsA("MeshPart") then
+        Hub()
+        repeat task.wait() until game.Players.LocalPlayer.Character:FindFirstChild("Outfit")
+        game.Players.LocalPlayer.start.Value = "rayzen"
+        Respawn()
+        repeat task.wait() until not game.Players.LocalPlayer.Character:FindFirstChild("Outfit")
+        Hub()
+        repeat task.wait() until game.Players.LocalPlayer.Character:FindFirstChild("Outfit")
+        game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame = CFrame.new(18.777990341186523, -2.5860984325408936, -9.264251708984375)
+    else
+        notify("SOF","a match is not ongoing")
+    end    
+end
 
 Match:AddButton({
     Name = "Spawn in match (buggy, may break server)",
     Callback = function()
-        function Respawn()
-            workspace.ServerStuff.spawnPlayer:FireServer("respawncharacter")
-        end  
-            
-        function Spawn()
-            if game:GetService("Workspace").GamemodeStuff:FindFirstChildWhichIsA("Folder") or game:GetService("Workspace").GamemodeStuff:FindFirstChildWhichIsA("MeshPart") then
-                Respawn()
-                wait(0.8)
-                workspace.ServerStuff.spawnPlayer:FireServer("spawn")
-                repeat wait() until game.Players.LocalPlayer.Character:FindFirstChild("Outfit")
-                game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame = CFrame.new(18.777990341186523, -2.5860984325408936, -9.264251708984375)
-            else
-                notify("SOF","a match is not ongoing")
-            end    
-        end
-        
         if game.Players.LocalPlayer.PlayerGui:FindFirstChild("menuGui") then
             if game.Players.LocalPlayer.PlayerGui:FindFirstChild("menuGui"):FindFirstChild("play").BackgroundColor3 == Color3.new(0,0,0) then
                 Spawn()
@@ -486,17 +497,10 @@ Misc:AddButton({
                 workspace.ServerStuff.detBarrel:FireServer(v)
             elseif v.Name == "Arsenal Locker" and v:FindFirstChild("Interact") then
                 game:GetService("ReplicatedStorage").Interactables.interaction:FireServer(v, "arsenal", _G.Code)
-            end    
+            elseif v.Name == "Airdrop Pad" then
+                game:GetService("ReplicatedStorage").Interactables.interaction:FireServer(v, "callairdrop", _G.Code)
+            end
         end   
-    end
-})
-
-Misc:AddParagraph("DESTROY GUI","This button will kill the gui")
-
-Misc:AddButton({
-    Name = "Kill Gui",
-    Callback = function()
-        OrionLib:Destroy()  
     end
 })
 
@@ -1035,7 +1039,7 @@ mt.__namecall = newcclosure(function(self, ...)
     local args = {...}
 
     if method == "FireServer" and tostring(self) == "dealDamage" then
-        if args[1] == 'toxicated' or args[1] == 'bleed' or args[1] == 'burning' then
+        if args[1] == 'toxicated' or args[1] == 'bleed' then
             if _G.EnviromentGodMode then
                 return
             end    
