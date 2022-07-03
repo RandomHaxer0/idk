@@ -6,9 +6,11 @@ local vomiting = {}
 
 spawn(function()
     while true do task.wait(0.1)
-        for i,v in pairs(vomiting) do
-            workspace.ServerStuff.applyGore:FireServer("vomit", game.Players:FindFirstChild(v).Character)
-        end    
+        pcall(function()
+            for i,v in pairs(vomiting) do
+                workspace.ServerStuff.applyGore:FireServer("vomit", game.Players:FindFirstChild(v).Character)
+            end    
+        end)    
     end  
 end)
 
@@ -17,7 +19,6 @@ if _G.Code ~= getrenv()._G.pseed[getrenv()._G.list[workspace.ServerStuff.ask:Inv
 end  
 
 function Respawn()
-    workspace.ServerStuff.spawnPlayer:FireServer("hubbing")
     workspace.ServerStuff.spawnPlayer:FireServer("respawncharacter")
 end    
 
@@ -94,6 +95,10 @@ Toggles:AddToggle({
         _G.infstam = true
     else
         _G.infstam = false
+        task.wait()
+        if InfStamService then
+            InfStamService:Disconnect()
+        end    
     end 
 spawn(function()
 
@@ -106,7 +111,6 @@ local Backpack = LocalPlayer.Backpack
 local mainHandler = Backpack:WaitForChild("mainHandler")
 
 -- // Find the stat init function
-function GetStamFunction()
     
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
@@ -131,15 +135,37 @@ do
     end
 end
 
-end
-
-while _G.infstam do wait()
+local InfStamService = game:GetService("RunService").RenderStepped:Connect(function()
     pcall(function()
-        GetStamFunction()
-        debug.setupvalue(_G.StatInit, 1, 101)
-    end)    
-end
-
+        if _G.infstam then
+            local Players = game:GetService("Players")
+            local LocalPlayer = Players.LocalPlayer
+            local Backpack = LocalPlayer.Backpack
+            local mainHandler = Backpack:WaitForChild("mainHandler")
+            
+            local StatInit
+            do
+                -- // Vars
+                local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+                local Humanoid = Character:WaitForChild("Humanoid")
+            
+                -- // Loop through .Changed connections
+                for _, Connection in ipairs(getconnections(Humanoid.Changed)) do
+                    -- // Vars
+                    local ConnectionFunction = Connection.Function
+            
+                    -- // Makes sure is mainHandler
+                    if (getfenv(ConnectionFunction).script == mainHandler) then
+                        _G.StatInit = debug.getupvalue(ConnectionFunction, 6)
+                    end
+                end
+            end
+            debug.setupvalue(_G.StatInit, 1, 101)
+        else
+            InfStamService:Disconnect()
+        end    
+    end)
+end)
 end)     
 end
 })
@@ -199,7 +225,7 @@ Toggles:AddButton({
         
         workspace.ServerStuff.dealDamage:FireServer("putjugsuit", nil, getrenv()._G.pseed[getrenv()._G.list[workspace.ServerStuff.ask:InvokeServer("mainHandler", true)]]);
         
-        repeat task.wait() until game:GetService("Players").LocalPlayer.Character:FindFirstChild("HumanoidRootPart"):FindFirstChild("speaker_music")
+        repeat wait() until game:GetService("Players").LocalPlayer.Character:FindFirstChild("HumanoidRootPart"):FindFirstChild("speaker_music")
         local music = game:GetService("Players").LocalPlayer.Character:FindFirstChild("HumanoidRootPart"):FindFirstChild("speaker_music")
         
         workspace.ServerStuff.getTPWeapon:FireServer(nil, nil, nil, music, false)
@@ -274,6 +300,34 @@ Toggles:AddButton({
 })
 
 Toggles:AddButton({
+    Name = "Open and detonate everything",
+    Callback = function()
+        for i,v in pairs(workspace.Interactables:GetChildren()) do
+            if v.Name == "Locker" and v:FindFirstChild("Interact") then
+                game:GetService("ReplicatedStorage").Interactables.interaction:FireServer(v, "locker", _G.Code)
+            elseif v.Name == "Medical Cabinet" and v:FindFirstChild("Interact") then
+                game:GetService("ReplicatedStorage").Interactables.interaction:FireServer(v, "medcab", _G.Code)
+            elseif v.Name == "Pylon" and v:FindFirstChild("Interact") then
+                game:GetService("ReplicatedStorage").Interactables.interaction:FireServer(v, "gaspylon", _G.Code)
+            elseif v.Name == "Double Locker" and v:FindFirstChild("Interact") then
+                game:GetService("ReplicatedStorage").Interactables.interaction:FireServer(v, "doublelocker", _G.Code)
+            elseif v.Name == "S.A.N.C Barrel" then
+                game:GetService("ReplicatedStorage").Interactables.interaction:FireServer(v, "sancbarrel", _G.Code)
+                workspace.ServerStuff.detBarrel:FireServer(v)
+            elseif v.Name == "Supply Crate" and v:FindFirstChild("Interact") then
+                game:GetService("ReplicatedStorage").Interactables.interaction:FireServer(v, "supcrate", _G.Code)
+            elseif v.Name == "Crate" and v:FindFirstChild("Interact") then
+                game:GetService("ReplicatedStorage").Interactables.interaction:FireServer(v, "crate", _G.Code)
+            elseif v.Name == "Barrel" then
+                workspace.ServerStuff.detBarrel:FireServer(v)
+            elseif v.Name == "Arsenal Locker" and v:FindFirstChild("Interact") then
+                game:GetService("ReplicatedStorage").Interactables.interaction:FireServer(v, "arsenal", _G.Code)
+            end    
+        end   
+    end
+})
+
+Toggles:AddButton({
     Name = "Fix Character (Will put back into menu)",
     Callback = function()
         Respawn()  
@@ -292,7 +346,7 @@ Toggles:AddButton({
                 Respawn()
                 wait(0.8)
                 workspace.ServerStuff.spawnPlayer:FireServer("spawn")
-                repeat task.wait() until game.Players.LocalPlayer.Character:FindFirstChild("Outfit")
+                repeat wait() until game.Players.LocalPlayer.Character:FindFirstChild("Outfit")
                 game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame = CFrame.new(18.777990341186523, -2.5860984325408936, -9.264251708984375)
             else
                 notify("SOF","a match is not ongoing")
@@ -331,6 +385,18 @@ Toggles:AddToggle({
             end
         end  
     end)
+end
+})
+
+Toggles:AddToggle({
+    Name = "Semi Enviromental GodMode",
+    Default = false,
+    Callback = function(shit)
+    if shit then
+        _G.EnviromentGodMode = true
+    else
+        _G.EnviromentGodMode = false
+    end 
 end
 })
 
@@ -375,7 +441,7 @@ Misc:AddTextbox({
 Misc:AddButton({
     Name = "UnVomit All",
     Callback = function()
-        local vomiting = {} 
+        vomiting = {}
     end
 })
 
@@ -394,7 +460,7 @@ Misc:AddButton({
     Name = "Vomit Others",
     Callback = function()
         for i,v in pairs(game.Players:GetPlayers()) do
-            if v and v.Character and v ~= game.Players.LocalPlayer then
+            if v and v ~= game.Players.LocalPlayer then
                 table.insert(vomiting, tostring(v))
             end
         end    
@@ -503,11 +569,11 @@ Toggles:AddToggle({
         _G.InfBlock = true
     else
         _G.InfBlock = false
-        task.wait()
+        wait()
         workspace.ServerStuff.initiateblock:FireServer(_G.Code, false)
     end 
     spawn(function()
-        while _G.InfBlock do task.wait(0.05)
+        while _G.InfBlock do wait(0.05)
             pcall(function()
                 workspace.ServerStuff.initiateblock:FireServer(_G.Code, true)
             end)
@@ -921,6 +987,24 @@ mt.__namecall = newcclosure(function(self, ...)
 end)
 
 end
+end)
+
+local mt = getrawmetatable(game)
+make_writeable(mt)
+
+local namecall = mt.__namecall
+mt.__namecall = newcclosure(function(self, ...)
+    local method = getnamecallmethod()
+    local args = {...}
+
+    if method == "FireServer" and tostring(self) == "dealDamage" then
+        if args[1] == 'toxicated' or args[1] == 'bleed' or args[1] == 'burning' then
+            if _G.EnviromentGodMode then
+                return
+            end    
+        end
+    end
+    return namecall(self, table.unpack(args))
 end)
 
 end)
