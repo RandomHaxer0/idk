@@ -1,9 +1,7 @@
 
-Rge = {};
 Rge.name = "Unwaivered";
 Rge.intensity = 1;
 Rge.ints = { 30 };
 Rge.dur = 10;
 Rge.icon = "4810588696";
 Rge.colour = Color3.new(0, 1, 0.4);
-return Rge
