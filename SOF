@@ -1,5 +1,31 @@
 pcall(function()
 
+-- breaks if its not the first idk why
+if _G.InfBlockCall ~= true then
+_G.InfBlockCall = true    
+spawn(function()
+
+local mt = getrawmetatable(game)
+make_writeable(mt)
+
+local namecall = mt.__namecall
+mt.__namecall = newcclosure(function(self, ...)
+    local method = getnamecallmethod()
+    local args = {...}
+
+    if method == "FireServer" and tostring(self) == "initiateblock" then
+        if args[2] ~= true then
+            if _G.InfBlock then
+                args[2] = true
+            end    
+        end
+    end
+    return namecall(self, table.unpack(args))
+end)
+
+end)
+end
+
 local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
 
 local vomiting = {}
@@ -223,7 +249,7 @@ end
 })
 
 Toggles:AddToggle({
-    Name = "Anti Shove (Might not work correctly)",
+    Name = "Anti Shove (Cant drop)",
     Default = false,
     Callback = function(shit)
     if shit then
@@ -594,17 +620,19 @@ Toggles:AddToggle({
     Callback = function(shit)
     if shit then
         _G.InfBlock = true
+        task.wait()
+        workspace.ServerStuff.initiateblock:FireServer(_G.Code, true)
     else
         _G.InfBlock = false
         task.wait()
         workspace.ServerStuff.initiateblock:FireServer(_G.Code, false)
     end 
     spawn(function()
-        while _G.InfBlock do task.wait(0.05)
-            pcall(function()
-                workspace.ServerStuff.initiateblock:FireServer(_G.Code, true)
-            end)
-        end
+        --while _G.InfBlock do task.wait(0.05)
+            --pcall(function()
+               -- workspace.ServerStuff.initiateblock:FireServer(_G.Code, true)
+            --end)
+        --end
     end)    
 end
 })
@@ -630,6 +658,7 @@ Toggles:AddToggle({
                 if (lp.Character and lp.Character:FindFirstChild("Head") and character:FindFirstChild("Head") and v ~= game.Players.LocalPlayer) then
                     local mag = (v.Character.Head.Position - lp.Character.Head.Position).Magnitude
                           if mag < 15 and character:FindFirstChild("Humanoid").Health > 0 then
+                                        
         
             local ohTable1 = {
             	[1] = "meleedamage",
@@ -968,11 +997,8 @@ end
     end
 })
 
-Match:AddParagraph("Some Stuff Before Use","Using these will disable inf. stamina so re enable it if you are using it")
-
-Match:AddButton({
-    Name = "Fix Character (Wont fix permanent death screen)",
-    Callback = function()
+function Spawn(Cords)
+    if game:GetService("Workspace").GamemodeStuff:FindFirstChildWhichIsA("Folder") then
         Hub()
         repeat task.wait() until game.Players.LocalPlayer.Character:FindFirstChild("Outfit")
         game.Players.LocalPlayer.start.Value = "rayzen"
@@ -981,44 +1007,55 @@ Match:AddButton({
         Hub()
         game.Players.LocalPlayer.start.Value = ""
         repeat task.wait() until game.Players.LocalPlayer.Character:FindFirstChild("Outfit")
-        Respawn()
-    end
-})
-
-function Spawn()
-    if game:GetService("Workspace").GamemodeStuff:FindFirstChildWhichIsA("Folder") or game:GetService("Workspace").GamemodeStuff:FindFirstChildWhichIsA("MeshPart") then
-        Hub()
-        repeat task.wait() until game.Players.LocalPlayer.Character:FindFirstChild("Outfit")
-        game.Players.LocalPlayer.start.Value = "rayzen"
-        Respawn()
-        repeat task.wait() until not game.Players.LocalPlayer.Character:FindFirstChild("Outfit")
-        Hub()
-        repeat task.wait() until game.Players.LocalPlayer.Character:FindFirstChild("Outfit")
-        game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame = CFrame.new(18.777990341186523, -2.5860984325408936, -9.264251708984375)
+        if Cords == "Match" then
+            game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame = CFrame.new(18.777990341186523, -2.5860984325408936, -9.264251708984375)
+        elseif Cords == "HubA" then
+            game.Players.LocalPlayer.start.Value = "hubbing"
+            game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame = CFrame.new(-118.72508239746094, -22.03114128112793, 1088.935546875)
+        elseif Cords == "Respawn" then
+            Respawn()
+        elseif Cords == "HubB" then
+            game.Players.LocalPlayer.start.Value = ""
+            game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame = CFrame.new(-118.72508239746094, -22.03114128112793, 1088.935546875)
+        end
     else
         notify("SOF","a match is not ongoing")
     end    
 end
 
 Match:AddButton({
-    Name = "Spawn in match (buggy, may break server)",
+    Name = "Fix Character (Wont fix permanent death screen)",
     Callback = function()
-        if game.Players.LocalPlayer.PlayerGui:FindFirstChild("menuGui") then
-            if game.Players.LocalPlayer.PlayerGui:FindFirstChild("menuGui"):FindFirstChild("play").BackgroundColor3 == Color3.new(0,0,0) then
-                Spawn()
-            else
-                notify("SOF","unready")
-            end
-        else
-            notify("SOF","goto menu")
-        end    
+        Spawn("Respawn")
+    end
+})
+
+Match:AddButton({
+    Name = "Spawn in match",
+    Callback = function()
+        Spawn("Match")
+    end
+})
+
+Match:AddButton({
+    Name = "Hub (PVP enabled)",
+    Callback = function()
+        Spawn("HubB")
+    end
+})
+
+Match:AddButton({
+    Name = "Hub (PVP disabled)",
+    Callback = function()
+        Spawn("HubA")
     end
 })
 
 spawn(function()
-
 if not _G.AllreadyNameCalled then
 _G.AllreadyNameCalled = true
+
+-- oneshot namecall
 
 local mt = getrawmetatable(game)
 make_writeable(mt)
@@ -1043,6 +1080,8 @@ mt.__namecall = newcclosure(function(self, ...)
     return namecall(self, table.unpack(args))
 end)
 
+-- backstab only namecall
+
 local mt = getrawmetatable(game)
 make_writeable(mt)
 
@@ -1061,7 +1100,7 @@ mt.__namecall = newcclosure(function(self, ...)
     return namecall(self, table.unpack(args))
 end)
 
-end
+-- enviroment godmode namecall
 
 local mt = getrawmetatable(game)
 make_writeable(mt)
@@ -1080,6 +1119,28 @@ mt.__namecall = newcclosure(function(self, ...)
     end
     return namecall(self, table.unpack(args))
 end)
+
+-- infblock namecall
+
+local mt = getrawmetatable(game)
+make_writeable(mt)
+
+local namecall = mt.__namecall
+mt.__namecall = newcclosure(function(self, ...)
+    local method = getnamecallmethod()
+    local args = {...}
+
+    if method == "FireServer" and tostring(self) == "initiateblock" then
+        if args[2] ~= true then
+            if _G.InfBlock then
+                args[2] = true
+            end    
+        end
+    end
+    return namecall(self, table.unpack(args))
+end)
+
+end
 
 end)
 
