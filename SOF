@@ -26,6 +26,16 @@ end)
 end)
 end
 
+function Heal(arg)
+    if arg == "One" then
+        workspace.ServerStuff.dealDamage:FireServer("Regeneration", nil, _G.Code)
+    elseif arg == "Full" then
+        for i = 0,(game.Players.LocalPlayer.Character:FindFirstChild("Humanoid").MaxHealth - game.Players.LocalPlayer.Character:FindFirstChild("Humanoid").Health) do
+            workspace.ServerStuff.dealDamage:FireServer("Regeneration", nil, _G.Code)
+        end
+    end
+end    
+
 local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
 
 local vomiting = {}
@@ -105,6 +115,12 @@ local Toggles = W1:MakeTab({
     PremiumOnly = false
 })
 
+local Combat = W1:MakeTab({
+    Name = "Combat",
+    Icon = "rbxassetid://4483345998", --- rbxassetid://4483345998
+    PremiumOnly = false
+})
+
 local Spawn = W1:MakeTab({
     Name = "Spawner",
     Icon = "rbxassetid://4483345998", --- rbxassetid://4483345998
@@ -123,7 +139,7 @@ local Misc = W1:MakeTab({
     PremiumOnly = false
 })
 
-Toggles:AddToggle({
+Combat:AddToggle({
     Name = "Inf. Stamina",
     Default = false,
     Callback = function(shit)
@@ -170,7 +186,7 @@ do
         end
     end
 end
-
+if _G.infstam then
 local InfStamService = game:GetService("RunService").RenderStepped:Connect(function()
     pcall(function()
         if _G.infstam then
@@ -202,11 +218,12 @@ local InfStamService = game:GetService("RunService").RenderStepped:Connect(funct
         end    
     end)
 end)
+end
 end)     
 end
 })
 
-Toggles:AddToggle({
+Combat:AddToggle({
     Name = "Simple GodMode",
     Default = false,
     Callback = function(shit)
@@ -232,10 +249,8 @@ end
 if _G.SimpleGod then
 local SimpleGodService = game:GetService("RunService").RenderStepped:Connect(function()
     pcall(function()
-        if _G.SimpleGod and game.Players.LocalPlayer.Character.Humanoid.Health ~= game.Players.LocalPlayer.Character.Humanoid.MaxHealth and game.Players.LocalPlayer.Character.Humanoid.MaxHealth < 1000 then
-            for i = 0,(game.Players.LocalPlayer.Character:FindFirstChild("Humanoid").MaxHealth - game.Players.LocalPlayer.Character:FindFirstChild("Humanoid").Health) do
-                workspace.ServerStuff.dealDamage:FireServer("Regeneration", nil, _G.Code)
-            end
+        if _G.SimpleGod and game.Players.LocalPlayer.Character.Humanoid.Health ~= game.Players.LocalPlayer.Character.Humanoid.MaxHealth and game.Players.LocalPlayer.Character.Humanoid.MaxHealth < 5000 then
+            Heal("Full")
         end    
     end)
 end)
@@ -248,7 +263,22 @@ end)
 end
 })
 
-Toggles:AddToggle({
+function Start(arg)
+    if arg == "AntiShove" then
+        game.Players.LocalPlayer:FindFirstChild("start").Value = "commander"
+    elseif arg == "UnAntiShove" then
+        game.Players.LocalPlayer:FindFirstChild("start").Value = "emperor"
+        game.Players.LocalPlayer:FindFirstChild("start").Value = "rayzen"
+        game.Players.LocalPlayer:FindFirstChild("start").Value = "hubbing"
+        game.Players.LocalPlayer:FindFirstChild("start").Value = ""
+    elseif arg == "Normal" then
+        game.Players.LocalPlayer:FindFirstChild("start").Value = ""
+    elseif arg == "Ray" then
+        game.Players.LocalPlayer:FindFirstChild("start").Value = "rayzen"
+    end    
+end
+
+Combat:AddToggle({
     Name = "Anti Shove (Cant drop)",
     Default = false,
     Callback = function(shit)
@@ -257,13 +287,13 @@ Toggles:AddToggle({
     else
         _G.AntiShove = false
         wait(0.1)
-        game.Players.LocalPlayer:FindFirstChild("start").Value = ""
+        Start("UnAntiShove")
     end
     
     spawn(function()
         while _G.AntiShove do task.wait()
             if game.Players.LocalPlayer.Character:FindFirstChild("Outfit") and game.Workspace.Camera:FindFirstChild("Bottom") and game.Workspace.Camera:FindFirstChild("FPArms") and game.Workspace.Camera:FindFirstChild("FPArms"):FindFirstChild("AC") and game.Players.LocalPlayer:FindFirstChild("start").Value ~= "emperor" then
-                game.Players.LocalPlayer:FindFirstChild("start").Value = "emperor"
+                Start("AntiShove")
             end
         end
     end)
@@ -520,7 +550,7 @@ Misc:AddButton({
     end
 })
 
-Toggles:AddToggle({
+Combat:AddToggle({
     Name = "One Shot",
     Default = false,
     Callback = function(shit)
@@ -532,7 +562,7 @@ Toggles:AddToggle({
 end
 })
 
-Toggles:AddToggle({
+Combat:AddToggle({
     Name = "BackStabs Only",
     Default = false,
     Callback = function(shit)
@@ -544,7 +574,7 @@ Toggles:AddToggle({
 end
 })
 
-Toggles:AddToggle({
+Combat:AddToggle({
     Name = "Kill Aura",
     Default = false,
     Callback = function(shit)
@@ -614,7 +644,7 @@ function GetTarget()
     return Closest
 end
 
-Toggles:AddToggle({
+Combat:AddToggle({
     Name = "Auto Parry",
     Default = false,
     Callback = function(shit)
@@ -627,17 +657,17 @@ Toggles:AddToggle({
         task.wait()
         workspace.ServerStuff.initiateblock:FireServer(_G.Code, false)
     end 
-    spawn(function()
+    --spawn(function()
         --while _G.InfBlock do task.wait(0.05)
             --pcall(function()
                -- workspace.ServerStuff.initiateblock:FireServer(_G.Code, true)
             --end)
         --end
-    end)    
+    --end)    
 end
 })
 
-Toggles:AddToggle({
+Combat:AddToggle({
     Name = "Auto Shove",
     Default = false,
     Callback = function(shit)
@@ -684,48 +714,6 @@ Toggles:AddToggle({
         end)
         end
     end)    
-end
-})
-
-Toggles:AddButton({
-    Name = "Alot of rep (ban risk)",
-    Callback = function()
-        function L()
-        
-        for cheeks = 0,50 do
-        
-        for i,v in pairs(game.Players:GetPlayers()) do
-            if v and v ~= game.Players.LocalPlayer and v.Character:FindFirstChild("Humanoid").Health > 0 then
-                for ass = 0,500 do
-                    local ohTable1 = {
-                        [1] = "meleedamage",
-                        [2] = v.Character,
-                        [3] = 14,
-                        [4] = true,
-                        [5] = "Fist",
-                        [6] = false,
-                        [7] = false,
-                        [8] = {
-                            ["rustic"] = true,
-                            ["leg"] = true,
-                            ["tough"] = true
-                        }
-                    }
-                    local ohNil2 = nil
-                    local ohNumber3 = getrenv()._G.pseed[getrenv()._G.list[workspace.ServerStuff.ask:InvokeServer("mainHandler", true)]]
-                        
-                    workspace.ServerStuff.dealDamage:FireServer(ohTable1, ohNil2, ohNumber3)
-                end
-            end
-        end
-        
-        end
-        
-        end
-        
-    for Lers = 0,2 do
-        L()
-    end    
 end
 })
 
@@ -1000,11 +988,11 @@ end
 function Spawn(Cords)
     Hub()
     repeat task.wait() until game.Players.LocalPlayer.Character:FindFirstChild("Outfit")
-    game.Players.LocalPlayer.start.Value = "rayzen"
+    Start("Ray")
     Respawn()
     repeat task.wait() until not game.Players.LocalPlayer.Character:FindFirstChild("Outfit")
     Hub()
-    game.Players.LocalPlayer.start.Value = ""
+    Start("Normal")
     repeat task.wait() until game.Players.LocalPlayer.Character:FindFirstChild("Outfit")
     if Cords == "Match" then
         game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame = CFrame.new(18.777990341186523, -2.5860984325408936, -9.264251708984375)
