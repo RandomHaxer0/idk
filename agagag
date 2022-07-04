@@ -1,8 +1,5 @@
 -- Decompiled with the Synapse X Luau decompiler.
 
-local v1 = {
-	Crp = {}
-};
 v1.Crp.name = "Cripple";
 v1.Crp.intensity = 1;
 v1.Crp.ints = { 0 };
