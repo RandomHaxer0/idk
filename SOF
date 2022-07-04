@@ -262,7 +262,7 @@ Toggles:AddToggle({
     
     spawn(function()
         while _G.AntiShove do task.wait()
-            if game.Players.LocalPlayer.Character:FindFirstChild("Outfit") and game.Players.LocalPlayer:FindFirstChild("start").Value ~= "emperor" then
+            if game.Players.LocalPlayer.Character:FindFirstChild("Outfit") and game.Workspace.Camera:FindFirstChild("Bottom") and game.Workspace.Camera:FindFirstChild("FPArms") and game.Workspace.Camera:FindFirstChild("FPArms"):FindFirstChild("AC") and game.Players.LocalPlayer:FindFirstChild("start").Value ~= "emperor" then
                 game.Players.LocalPlayer:FindFirstChild("start").Value = "emperor"
             end
         end
@@ -998,29 +998,25 @@ end
 })
 
 function Spawn(Cords)
-    if game:GetService("Workspace").GamemodeStuff:FindFirstChildWhichIsA("Folder") then
-        Hub()
-        repeat task.wait() until game.Players.LocalPlayer.Character:FindFirstChild("Outfit")
-        game.Players.LocalPlayer.start.Value = "rayzen"
+    Hub()
+    repeat task.wait() until game.Players.LocalPlayer.Character:FindFirstChild("Outfit")
+    game.Players.LocalPlayer.start.Value = "rayzen"
+    Respawn()
+    repeat task.wait() until not game.Players.LocalPlayer.Character:FindFirstChild("Outfit")
+    Hub()
+    game.Players.LocalPlayer.start.Value = ""
+    repeat task.wait() until game.Players.LocalPlayer.Character:FindFirstChild("Outfit")
+    if Cords == "Match" then
+        game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame = CFrame.new(18.777990341186523, -2.5860984325408936, -9.264251708984375)
+    elseif Cords == "HubA" then
+        game.Players.LocalPlayer.start.Value = "hubbing"
+        game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame = CFrame.new(-118.72508239746094, -22.03114128112793, 1088.935546875)
+    elseif Cords == "Respawn" then
         Respawn()
-        repeat task.wait() until not game.Players.LocalPlayer.Character:FindFirstChild("Outfit")
-        Hub()
+    elseif Cords == "HubB" then
         game.Players.LocalPlayer.start.Value = ""
-        repeat task.wait() until game.Players.LocalPlayer.Character:FindFirstChild("Outfit")
-        if Cords == "Match" then
-            game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame = CFrame.new(18.777990341186523, -2.5860984325408936, -9.264251708984375)
-        elseif Cords == "HubA" then
-            game.Players.LocalPlayer.start.Value = "hubbing"
-            game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame = CFrame.new(-118.72508239746094, -22.03114128112793, 1088.935546875)
-        elseif Cords == "Respawn" then
-            Respawn()
-        elseif Cords == "HubB" then
-            game.Players.LocalPlayer.start.Value = ""
-            game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame = CFrame.new(-118.72508239746094, -22.03114128112793, 1088.935546875)
-        end
-    else
-        notify("SOF","a match is not ongoing")
-    end    
+        game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame = CFrame.new(-118.72508239746094, -22.03114128112793, 1088.935546875)
+    end
 end
 
 Match:AddButton({
