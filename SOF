@@ -293,6 +293,7 @@ Combat:AddToggle({
     spawn(function()
         while _G.AntiShove do task.wait()
             if game.Players.LocalPlayer.Character:FindFirstChild("Outfit") and game.Workspace.Camera:FindFirstChild("Bottom") and game.Workspace.Camera:FindFirstChild("FPArms") and game.Workspace.Camera:FindFirstChild("FPArms"):FindFirstChild("AC") and game.Players.LocalPlayer:FindFirstChild("start").Value ~= "emperor" then
+                wait(1)
                 Start("AntiShove")
             end
         end
