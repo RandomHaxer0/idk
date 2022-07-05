@@ -413,7 +413,7 @@ Buff:AddSlider({
 Buff:AddSlider({
 	Name = "Armor Duration",
 	Min = 0,
-	Max = 2000,
+	Max = 3000,
 	Default = _G.Armor,
 	Color = Color3.fromRGB(200,200,200),
 	Increment = 0.1,
@@ -428,7 +428,7 @@ Buff:AddSlider({
 Buff:AddSlider({
 	Name = "Berserk Duration",
 	Min = 0,
-	Max = 1000,
+	Max = 2500,
 	Default = _G.Berserk,
 	Color = Color3.fromRGB(200,200,200),
 	Increment = 0.1,
@@ -443,7 +443,7 @@ Buff:AddSlider({
 Buff:AddSlider({
 	Name = "BloodThirst Duration",
 	Min = 0,
-	Max = 1000,
+	Max = 2500,
 	Default = _G.BloodThirst,
 	Color = Color3.fromRGB(200,200,200),
 	Increment = 0.1,
@@ -458,7 +458,7 @@ Buff:AddSlider({
 Buff:AddSlider({
 	Name = "MuscleMilk Duration",
 	Min = 0,
-	Max = 1000,
+	Max = 2500,
 	Default = _G.MuscleMilk,
 	Color = Color3.fromRGB(200,200,200),
 	Increment = 0.1,
@@ -473,7 +473,7 @@ Buff:AddSlider({
 Buff:AddSlider({
 	Name = "Iron4Skin Duration",
 	Min = 0,
-	Max = 1000,
+	Max = 2500,
 	Default = _G.Iron4Skin,
 	Color = Color3.fromRGB(200,200,200),
 	Increment = 0.1,
@@ -488,7 +488,7 @@ Buff:AddSlider({
 Buff:AddSlider({
 	Name = "LungButter Duration",
 	Min = 0,
-	Max = 1000,
+	Max = 2500,
 	Default = _G.LungButter,
 	Color = Color3.fromRGB(200,200,200),
 	Increment = 0.1,
@@ -503,7 +503,7 @@ Buff:AddSlider({
 Buff:AddSlider({
 	Name = "Iron4Skin Duration",
 	Min = 0,
-	Max = 1000,
+	Max = 2500,
 	Default = _G.Iron4Skin,
 	Color = Color3.fromRGB(200,200,200),
 	Increment = 0.1,
@@ -518,7 +518,7 @@ Buff:AddSlider({
 Buff:AddSlider({
 	Name = "SpeedyThrusts Duration",
 	Min = 0,
-	Max = 1000,
+	Max = 2500,
 	Default = _G.SpeedyThrusts,
 	Color = Color3.fromRGB(200,200,200),
 	Increment = 0.1,
@@ -533,7 +533,7 @@ Buff:AddSlider({
 Buff:AddSlider({
 	Name = "Regeneration Duration",
 	Min = 0,
-	Max = 1000,
+	Max = 2500,
 	Default = _G.Regeneration,
 	Color = Color3.fromRGB(200,200,200),
 	Increment = 0.1,
@@ -548,7 +548,7 @@ Buff:AddSlider({
 Buff:AddSlider({
 	Name = "Painkillers Duration",
 	Min = 0,
-	Max = 1000,
+	Max = 2500,
 	Default = _G.Painkillers,
 	Color = Color3.fromRGB(200,200,200),
 	Increment = 0.1,
@@ -593,7 +593,7 @@ Buff:AddSlider({
 Buff:AddSlider({
 	Name = "TrackingBeacon Duration",
 	Min = 0,
-	Max = 1000,
+	Max = 2500,
 	Default = _G.TrackingBeacon,
 	Color = Color3.fromRGB(200,200,200),
 	Increment = 0.1,
