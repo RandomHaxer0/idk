@@ -5,7 +5,6 @@ pcall(function()
 function CheckValue(Name, Value1, Value2, Value3)
     if Name > Value1 or Name < Value2 then
         Name = Value3
-        rconsolewarn(""..Name.."is going over or under the limit!")
     end
 end
 
@@ -20,14 +19,14 @@ CheckValue(_G.Sickness, 10, 0, 0)
 CheckValue(_G.Susceptible, 10, 0, 0)
 CheckValue(_G.Berserk, 1000, 0, 360)
 CheckValue(_G.BloodThirst, 1000, 0, 360)
-CheckValue(_G.MuscleMilk, 500, 0, 250)
-CheckValue(_G.Iron4Skin, 500, 0, 250)
-CheckValue(_G.LungButter, 500, 0, 250)
-CheckValue(_G.SpeedyThrusts, 500, 0, 250)
-CheckValue(_G.Regeneration, 500, 0, 250)
-CheckValue(_G.Painkillers, 500, 0, 250)
+CheckValue(_G.MuscleMilk, 1000, 0, 250)
+CheckValue(_G.Iron4Skin, 1000, 0, 250)
+CheckValue(_G.LungButter, 1000, 0, 250)
+CheckValue(_G.SpeedyThrusts, 1000, 0, 250)
+CheckValue(_G.Regeneration, 1000, 0, 250)
+CheckValue(_G.Painkillers, 1000, 0, 250)
 CheckValue(_G.Snared, 50, 0, 0)
-CheckValue(_G.TrackingBeacon, 500, 0, 250)
+CheckValue(_G.TrackingBeacon, 1000, 0, 250)
 CheckValue(_G.Tinnitus, 50, 0, 0)
 CheckValue(_G.Showdown, 50, 0, 20)
 
@@ -459,7 +458,7 @@ Buff:AddSlider({
 Buff:AddSlider({
 	Name = "MuscleMilk Duration",
 	Min = 0,
-	Max = 500,
+	Max = 1000,
 	Default = _G.MuscleMilk,
 	Color = Color3.fromRGB(200,200,200),
 	Increment = 0.1,
@@ -474,7 +473,7 @@ Buff:AddSlider({
 Buff:AddSlider({
 	Name = "Iron4Skin Duration",
 	Min = 0,
-	Max = 500,
+	Max = 1000,
 	Default = _G.Iron4Skin,
 	Color = Color3.fromRGB(200,200,200),
 	Increment = 0.1,
@@ -489,7 +488,7 @@ Buff:AddSlider({
 Buff:AddSlider({
 	Name = "LungButter Duration",
 	Min = 0,
-	Max = 500,
+	Max = 1000,
 	Default = _G.LungButter,
 	Color = Color3.fromRGB(200,200,200),
 	Increment = 0.1,
@@ -504,7 +503,7 @@ Buff:AddSlider({
 Buff:AddSlider({
 	Name = "Iron4Skin Duration",
 	Min = 0,
-	Max = 500,
+	Max = 1000,
 	Default = _G.Iron4Skin,
 	Color = Color3.fromRGB(200,200,200),
 	Increment = 0.1,
@@ -519,7 +518,7 @@ Buff:AddSlider({
 Buff:AddSlider({
 	Name = "SpeedyThrusts Duration",
 	Min = 0,
-	Max = 500,
+	Max = 1000,
 	Default = _G.SpeedyThrusts,
 	Color = Color3.fromRGB(200,200,200),
 	Increment = 0.1,
@@ -534,7 +533,7 @@ Buff:AddSlider({
 Buff:AddSlider({
 	Name = "Regeneration Duration",
 	Min = 0,
-	Max = 500,
+	Max = 1000,
 	Default = _G.Regeneration,
 	Color = Color3.fromRGB(200,200,200),
 	Increment = 0.1,
@@ -549,7 +548,7 @@ Buff:AddSlider({
 Buff:AddSlider({
 	Name = "Painkillers Duration",
 	Min = 0,
-	Max = 500,
+	Max = 1000,
 	Default = _G.Painkillers,
 	Color = Color3.fromRGB(200,200,200),
 	Increment = 0.1,
@@ -594,7 +593,7 @@ Buff:AddSlider({
 Buff:AddSlider({
 	Name = "TrackingBeacon Duration",
 	Min = 0,
-	Max = 500,
+	Max = 1000,
 	Default = _G.TrackingBeacon,
 	Color = Color3.fromRGB(200,200,200),
 	Increment = 0.1,
