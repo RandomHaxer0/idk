@@ -1,8 +1,70 @@
 pcall(function()
 
+-- checks for stats duration
+
+function CheckValue(Name, Value1, Value2, Value3)
+    if Name > Value1 or Name < Value2 then
+        Name = Value3
+        rconsolewarn(""..Name.."is going over or under the limit!")
+    end
+end
+
+CheckValue(_G.Bleed, 10, 0, 0)
+CheckValue(_G.Expose, 10, 0, 0)
+CheckValue(_G.Cripple, 10, 0, 0)
+CheckValue(_G.Blind, 10, 0, 0)
+CheckValue(_G.Pierce, 10, 0, 0)
+CheckValue(_G.Toxin, 10, 0, 0)
+CheckValue(_G.Vomit, 10, 0, 0)
+CheckValue(_G.Sickness, 10, 0, 0)
+CheckValue(_G.Susceptible, 10, 0, 0)
+CheckValue(_G.Berserk, 1000, 0, 360)
+CheckValue(_G.BloodThirst, 1000, 0, 360)
+CheckValue(_G.MuscleMilk, 500, 0, 250)
+CheckValue(_G.Iron4Skin, 500, 0, 250)
+CheckValue(_G.LungButter, 500, 0, 250)
+CheckValue(_G.SpeedyThrusts, 500, 0, 250)
+CheckValue(_G.Regeneration, 500, 0, 250)
+CheckValue(_G.Painkillers, 500, 0, 250)
+CheckValue(_G.Snared, 50, 0, 0)
+CheckValue(_G.TrackingBeacon, 500, 0, 250)
+CheckValue(_G.Tinnitus, 50, 0, 0)
+CheckValue(_G.Showdown, 50, 0, 20)
+
+
+-- dont edit these
+local S = require(game:GetService("Workspace").ServerStuff:FindFirstChild("Statistics"):FindFirstChild("S_STATISTICS"))
+if _G.timed ~= true then
+    _G.timed = true
+    
+    _G.BldD = S.Bld.dur
+    _G.ExpD = S.Exp.dur
+    _G.CrpD = S.Crp.dur
+    _G.BndD = S.Bnd.dur
+    _G.PrcD = S.Prc.dur
+    _G.PsnD = S.Psn.dur
+    _G.VcdD = S.Vcd.dur
+    _G.ScsD = S.Scs.dur
+    _G.SusD = S.Sus.dur
+    _G.BrzD = S.Brz.dur
+    _G.BlsD = S.BlsD.dur
+    _G.ArmD = S.Arm.dur
+    _G.MuscleMilkD = S["Muscle Milk"].dur
+    _G.Iron4SkinD = S["Iron 4 Skin"].dur
+    _G.LungButterD = S["Lung Butter"].dur
+    _G.SpeedyThrustsD = S["Speedy Thrusts"].dur
+    _G.RgnD = S.Rgn.dur
+    _G.PnkD = S.Pnk.dur
+    _G.BsgD = S.Bsg.dur
+    _G.SnrD = S.Snr.dur
+    _G.BcnD = S.Bcn.dur
+    _G.TntD = S.Tnt.dur
+    _G.ShdD = S.Shd.dur
+end  
+
 -- breaks if its not the first idk why
-if _G.InfBlockCall ~= true then
-_G.InfBlockCall = true    
+if _G.AutoParryCall ~= true then
+_G.AutoParryCall = true    
 spawn(function()
 
 local mt = getrawmetatable(game)
@@ -15,7 +77,7 @@ mt.__namecall = newcclosure(function(self, ...)
 
     if method == "FireServer" and tostring(self) == "initiateblock" then
         if args[2] ~= true then
-            if _G.InfBlock then
+            if _G.AutoParry then
                 args[2] = true
             end    
         end
@@ -35,8 +97,6 @@ function Heal(arg)
         end
     end
 end    
-
-local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
 
 local vomiting = {}
 
@@ -90,7 +150,9 @@ function playersearch(arg)
     end
 end
 
-local W1 = OrionLib:MakeWindow({Name = "SOF", HidePremium = false, SaveConfig = false, ConfigFolder = "SOF"})
+local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
+
+local W1 = OrionLib:MakeWindow({Name = "SOF", HidePremium = false, IntroEnabled = false, SaveConfig = true, ConfigFolder = "SOFSettings"})
 
 OrionLib:MakeNotification({
     Name = "SOF",
@@ -133,15 +195,452 @@ local Match = W1:MakeTab({
     PremiumOnly = false
 })
 
+local Buff = W1:MakeTab({
+    Name = "Ability Stats",
+    Icon = "rbxassetid://4483345998", --- rbxassetid://4483345998
+    PremiumOnly = false
+})
+
 local Misc = W1:MakeTab({
     Name = "Misc.",
     Icon = "rbxassetid://4483345998", --- rbxassetid://4483345998
     PremiumOnly = false
 })
 
+Buff:AddParagraph("Stuff","This shit long and i dont see why u would want to atcually edit these (there are gonna be more options in the future)")
+
+Buff:AddButton({
+    Name = "Update buffs and debuffs",
+    Callback = function()
+        for i,v1 in pairs(getgc(true)) do
+            if type(v1) == "table" and rawget(v1,"Bld") then
+                --rconsolewarn("shit")
+                v1.Bld.dur = _G.Bleed
+                v1.Exp.dur = _G.Expose
+                v1.Crp.dur = _G.Cripple
+                v1.Bnd.dur = _G.Blind
+                v1.Prc.dur = _G.Pierce
+                v1.Psn.dur = _G.Toxin
+                v1.Vcd.dur = _G.Vomit
+                v1.Scs.dur = _G.Sickness
+                v1.Sus.dur = _G.Susceptible
+                v1.Brz.dur = _G.Berserk
+                v1.Bls.dur = _G.BloodThirst
+                v1.Arm.dur = _G.Armor
+                v1["Muscle Milk"].dur = _G.MuscleMilk
+                v1["Iron 4 Skin"].dur = _G.Iron4Skin
+                v1["Lung Butter"].dur = _G.LungButter
+                v1["Speedy Thrusts"].dur = _G.SpeedyThrusts
+                v1.Rgn.dur = _G.Regeneration
+                v1.Pnk.duur = _G.Painkillers
+                v1.Bsg.dur = _G.BlockStagger
+                v1.Snr.dur = _G.Snared
+                v1.Bcn.dur = _G.TrackingBeacon
+                v1.Tnt.dur = _G.Tinnitus
+                v1.Shd.dur = _G.Showdown
+            end
+        end 
+    end    
+})
+
+Buff:AddButton({
+    Name = "Reset buffs and debuffs",
+    Callback = function()
+         for i,v1 in pairs(getgc(true)) do
+            if type(v1) == "table" and rawget(v1,"Bld") then
+                v1.Bld.dur = _G.BldD
+                v1.Exp.dur = _G.ExpD
+                v1.Crp.dur = _G.CrpD
+                v1.Bnd.dur = _G.BndD
+                v1.Prc.dur = _G.PrcD
+                v1.Psn.dur = _G.PsnD
+                v1.Vcd.dur = _G.VcdD
+                v1.Scs.dur = _G.ScsD
+                v1.Sus.dur = _G.SusD
+                v1.Brz.dur = _G.BrzD
+                v1.Bls.dur = _G.BlsD
+                v1.Arm.dur = _G.ArmD
+                v1["Muscle Milk"].dur = _G.MuscleMilkD
+                v1["Iron 4 Skin"].dur = _G.Iron4SkinD
+                v1["Lung Butter"].dur = _G.LungButterD
+                v1["Speedy Thrusts"].dur = _G.SpeedyThrustsD
+                v1.Rgn.dur = _G.RgnD
+                v1.Pnk.duur = _G.PnkD
+                v1.Bsg.dur = _G.BsgD
+                v1.Snr.dur = _G.SnrD
+                v1.Bcn.dur = _G.BcnD
+                v1.Tnt.dur = _G.TntD
+                v1.Shd.dur = _G.ShdD
+            end
+        end   
+    end    
+})
+
+Buff:AddSlider({
+	Name = "Bleed Duration",
+	Min = 0,
+	Max = 10,
+	Default = _G.Bleed,
+	Color = Color3.fromRGB(200,200,200),
+	Increment = 0.1,
+	ValueName = "",
+	Save = true,
+    Flag = "Bleed Duration",
+    Callback = function(shit)
+        _G.Bleed = tonumber(shit)
+    end 
+})  
+
+Buff:AddSlider({
+	Name = "Expose Duration",
+	Min = 0,
+	Max = 10,
+	Default = _G.Expose,
+	Color = Color3.fromRGB(200,200,200),
+	Increment = 0.1,
+	ValueName = "",
+	Save = true,
+    Flag = "Expose Duration",
+    Callback = function(shit)
+        _G.Expose = tonumber(shit)
+    end 
+})
+
+Buff:AddSlider({
+	Name = "Cripple Duration",
+	Min = 0,
+	Max = 10,
+	Default = _G.Cripple,
+	Color = Color3.fromRGB(200,200,200),
+	Increment = 0.1,
+	ValueName = "",
+	Save = true,
+    Flag = "Cripple Duration",
+    Callback = function(shit)
+        _G.Cripple = tonumber(shit)
+    end 
+})
+
+Buff:AddSlider({
+	Name = "Blindness Duration",
+	Min = 0,
+	Max = 10,
+	Default = _G.Blind,
+	Color = Color3.fromRGB(200,200,200),
+	Increment = 0.1,
+	ValueName = "",
+    Save = true,
+    Flag = "Blindness Duration",
+    Callback = function(shit)
+        _G.Blind = tonumber(shit)
+    end 
+})
+
+Buff:AddSlider({
+	Name = "Pierce Duration",
+	Min = 0,
+	Max = 10,
+	Default = _G.Pierce,
+	Color = Color3.fromRGB(200,200,200),
+	Increment = 0.1,
+	ValueName = "",
+    Save = true,
+    Flag = "Pierce Duration",
+    Callback = function(shit)
+        _G.Pierce = tonumber(shit)
+    end 
+})
+
+Buff:AddSlider({
+	Name = "Vomit Duration",
+	Min = 0,
+	Max = 10,
+	Default = _G.Vomit,
+	Color = Color3.fromRGB(200,200,200),
+	Increment = 0.1,
+	ValueName = "",
+	Save = true,
+    Flag = "Vomit Duration",
+    Callback = function(shit)
+        _G.Vomit = tonumber(shit)
+    end 
+})
+
+Buff:AddSlider({
+	Name = "Sickness Duration",
+	Min = 0,
+	Max = 10,
+	Default = _G.Sickness,
+	Color = Color3.fromRGB(200,200,200),
+	Increment = 0.1,
+	ValueName = "",
+    Save = true,
+    Flag = "Sickness Duration",
+    Callback = function(shit)
+        _G.Sickness = tonumber(shit)
+    end 
+})
+
+Buff:AddSlider({
+	Name = "Toxins Duration",
+	Min = 0,
+	Max = 10,
+	Default = _G.Toxin,
+	Color = Color3.fromRGB(200,200,200),
+	Increment = 0.1,
+	ValueName = "",
+	Save = true,
+    Flag = "Toxins Duration",
+    Callback = function(shit)
+        _G.Toxin = tonumber(shit)
+    end 
+})
+
+Buff:AddSlider({
+	Name = "Susceptible Duration",
+	Min = 0,
+	Max = 10,
+	Default = _G.Susceptible,
+	Color = Color3.fromRGB(200,200,200),
+	Increment = 0.1,
+	ValueName = "",
+	Save = true,
+    Flag = "Susceptible Duration",
+    Callback = function(shit)
+        _G.Susceptible = tonumber(shit)
+    end 
+})
+
+Buff:AddSlider({
+	Name = "Armor Duration",
+	Min = 0,
+	Max = 2000,
+	Default = _G.Armor,
+	Color = Color3.fromRGB(200,200,200),
+	Increment = 0.1,
+	ValueName = "",
+	Save = true,
+    Flag = "Armor Duration",
+    Callback = function(shit)
+        _G.Armor = tonumber(shit)
+    end 
+})
+
+Buff:AddSlider({
+	Name = "Berserk Duration",
+	Min = 0,
+	Max = 1000,
+	Default = _G.Berserk,
+	Color = Color3.fromRGB(200,200,200),
+	Increment = 0.1,
+	ValueName = "",
+	Save = true,
+    Flag = "Berserk Duration",
+    Callback = function(shit)
+        _G.Berserk = tonumber(shit)
+    end 
+})
+
+Buff:AddSlider({
+	Name = "BloodThirst Duration",
+	Min = 0,
+	Max = 1000,
+	Default = _G.BloodThirst,
+	Color = Color3.fromRGB(200,200,200),
+	Increment = 0.1,
+	ValueName = "",
+	Save = true,
+    Flag = "BloodThirst Duration",
+    Callback = function(shit)
+        _G.BloodThirst = tonumber(shit)
+    end 
+})
+
+Buff:AddSlider({
+	Name = "MuscleMilk Duration",
+	Min = 0,
+	Max = 500,
+	Default = _G.MuscleMilk,
+	Color = Color3.fromRGB(200,200,200),
+	Increment = 0.1,
+	ValueName = "",
+	Save = true,
+    Flag = "MuscleMilk Duration",
+    Callback = function(shit)
+        _G.MuscleMilk = tonumber(shit)
+    end 
+})
+
+Buff:AddSlider({
+	Name = "Iron4Skin Duration",
+	Min = 0,
+	Max = 500,
+	Default = _G.Iron4Skin,
+	Color = Color3.fromRGB(200,200,200),
+	Increment = 0.1,
+	ValueName = "",
+	Save = true,
+    Flag = "Iron4Skin Duration",
+    Callback = function(shit)
+        _G.Iron4Skin = tonumber(shit)
+    end 
+})
+
+Buff:AddSlider({
+	Name = "LungButter Duration",
+	Min = 0,
+	Max = 500,
+	Default = _G.LungButter,
+	Color = Color3.fromRGB(200,200,200),
+	Increment = 0.1,
+	ValueName = "",
+	Save = true,
+    Flag = "LungButter Duration",
+    Callback = function(shit)
+        _G.LungButter = tonumber(shit)
+    end 
+})
+
+Buff:AddSlider({
+	Name = "Iron4Skin Duration",
+	Min = 0,
+	Max = 500,
+	Default = _G.Iron4Skin,
+	Color = Color3.fromRGB(200,200,200),
+	Increment = 0.1,
+	ValueName = "",
+	Save = true,
+    Flag = "Iron4Skin Duration",
+    Callback = function(shit)
+        _G.Iron4Skin = tonumber(shit)
+    end 
+})
+
+Buff:AddSlider({
+	Name = "SpeedyThrusts Duration",
+	Min = 0,
+	Max = 500,
+	Default = _G.SpeedyThrusts,
+	Color = Color3.fromRGB(200,200,200),
+	Increment = 0.1,
+	ValueName = "",
+	Save = true,
+    Flag = "SpeedyThrusts Duration",
+    Callback = function(shit)
+        _G.SpeedyThrusts = tonumber(shit)
+    end 
+})
+
+Buff:AddSlider({
+	Name = "Regeneration Duration",
+	Min = 0,
+	Max = 500,
+	Default = _G.Regeneration,
+	Color = Color3.fromRGB(200,200,200),
+	Increment = 0.1,
+	ValueName = "",
+	Save = true,
+    Flag = "Regeneration Duration",
+    Callback = function(shit)
+        _G.Regeneration = tonumber(shit)
+    end 
+})
+
+Buff:AddSlider({
+	Name = "Painkillers Duration",
+	Min = 0,
+	Max = 500,
+	Default = _G.Painkillers,
+	Color = Color3.fromRGB(200,200,200),
+	Increment = 0.1,
+	ValueName = "",
+	Save = true,
+    Flag = "Painkillers Duration",
+    Callback = function(shit)
+        _G.Painkillers = tonumber(shit)
+    end 
+})
+
+Buff:AddSlider({
+	Name = "BlockStagger Duration",
+	Min = 0,
+	Max = 5,
+	Default = _G.BlockStagger,
+	Color = Color3.fromRGB(200,200,200),
+	Increment = 0.1,
+	ValueName = "",
+	Save = true,
+    Flag = "BlockStagger Duration",
+    Callback = function(shit)
+        _G.BlockStagger = tonumber(shit)
+    end 
+})
+
+Buff:AddSlider({
+	Name = "Snared Duration",
+	Min = 0,
+	Max = 50,
+	Default = _G.Snared,
+	Color = Color3.fromRGB(200,200,200),
+	Increment = 0.1,
+	ValueName = "",
+	Save = true,
+    Flag = "Snared Duration",
+    Callback = function(shit)
+        _G.Snared = tonumber(shit)
+    end 
+})
+
+Buff:AddSlider({
+	Name = "TrackingBeacon Duration",
+	Min = 0,
+	Max = 500,
+	Default = _G.TrackingBeacon,
+	Color = Color3.fromRGB(200,200,200),
+	Increment = 0.1,
+	ValueName = "",
+	Save = true,
+    Flag = "TrackingBeacon Duration",
+    Callback = function(shit)
+        _G.TrackingBeacon = tonumber(shit)
+    end 
+})
+
+Buff:AddSlider({
+	Name = "Tinnitus Duration",
+	Min = 0,
+	Max = 50,
+	Default = _G.Tinnitus,
+	Color = Color3.fromRGB(200,200,200),
+	Increment = 0.1,
+	ValueName = "",
+	Save = true,
+    Flag = "Tinnitus Duration",
+    Callback = function(shit)
+        _G.Tinnitus = tonumber(shit)
+    end 
+})
+
+Buff:AddSlider({
+	Name = "Showdown Duration",
+	Min = 0,
+	Max = 50,
+	Default = _G.Showdown,
+	Color = Color3.fromRGB(200,200,200),
+	Increment = 0.1,
+	ValueName = "",
+	Save = true,
+    Flag = "Showdown Duration",
+    Callback = function(shit)
+        _G.Showdown = tonumber(shit)
+    end 
+})
+
 Combat:AddToggle({
     Name = "Inf. Stamina",
-    Default = false,
+    Default = _G.infstam,
+    Save = true,
+    Flag = "Inf. Stamina",
     Callback = function(shit)
     if shit then
         _G.infstam = true
@@ -225,7 +724,9 @@ end
 
 Combat:AddToggle({
     Name = "Simple GodMode",
-    Default = false,
+    Default = _G.SimpleGod,
+    Save = true,
+    Flag = "Simple GodMode",
     Callback = function(shit)
     if shit then
         _G.SimpleGod = true
@@ -264,9 +765,10 @@ end
 })
 
 function Start(arg)
-    if arg == "AntiShove" then
+    if arg == "UnWaired" then
+        game.Players.LocalPlayer:FindFirstChild("start").Value = "rayzen"
         game.Players.LocalPlayer:FindFirstChild("start").Value = "commander"
-    elseif arg == "UnAntiShove" then
+    elseif arg == "Waired" then
         game.Players.LocalPlayer:FindFirstChild("start").Value = "emperor"
         game.Players.LocalPlayer:FindFirstChild("start").Value = "rayzen"
         game.Players.LocalPlayer:FindFirstChild("start").Value = "hubbing"
@@ -279,22 +781,30 @@ function Start(arg)
 end
 
 Combat:AddToggle({
-    Name = "Anti Shove (Cant drop)",
-    Default = false,
+    Name = "AntiShove (Can't drop)",
+    Default = _G.AntiShove,
+    Save = true,
+    Flag = "Inf. Wairy",
     Callback = function(shit)
     if shit then
         _G.AntiShove = true
+        if game:GetService("Workspace").Camera:FindFirstChild("Bottom") and game.Players.LocalPlayer:FindFirstChild("start").Value ~= "commander" then
+            Start("UnWaired")
+        end    
     else
         _G.AntiShove = false
-        wait(0.1)
-        Start("UnAntiShove")
+        wait(0.2)
+        require(game:GetService("Workspace").ServerStuff.Statistics["S_STATISTICS"]).Rge.dur = 0
+        Start("Waired")
+        task.wait()
+        require(game:GetService("Workspace").ServerStuff.Statistics["S_STATISTICS"]).Rge.dur = 10
     end
     
     spawn(function()
-        while _G.AntiShove do task.wait()
-            if game.Players.LocalPlayer.Character:FindFirstChild("Outfit") and game.Workspace.Camera:FindFirstChild("Bottom") and game.Workspace.Camera:FindFirstChild("FPArms") and game.Workspace.Camera:FindFirstChild("FPArms"):FindFirstChild("AC") and game.Players.LocalPlayer:FindFirstChild("start").Value ~= "emperor" then
+        while _G.AntiShove do task.wait(0.1)
+            if game:GetService("Workspace").Camera:FindFirstChild("Bottom") and game.Players.LocalPlayer:FindFirstChild("start").Value ~= "commander" then
                 wait(1)
-                Start("AntiShove")
+                Start("UnWaired")
             end
         end
     end)
@@ -405,7 +915,9 @@ Toggles:AddButton({
 
 Toggles:AddToggle({
     Name = "Auto Remove Gas On Win",
-    Default = false,
+    Default = _G.AutoGasRemoveOnWin,
+    Save = true,
+    Flag = "Auto Remove Gas On Win",
     Callback = function(shit)
     if shit then
         _G.AutoGasRemoveOnWin = true
@@ -427,7 +939,9 @@ end
 
 Toggles:AddToggle({
     Name = "Semi Enviromental GodMode",
-    Default = false,
+    Default = _G.EnviromentGodMode,
+    Save = true,
+    Flag = "Semi Enviromental GodMode",
     Callback = function(shit)
     if shit then
         _G.EnviromentGodMode = true
@@ -553,7 +1067,9 @@ Misc:AddButton({
 
 Combat:AddToggle({
     Name = "One Shot",
-    Default = false,
+    Default = _G.oneshot,
+    Save = true,
+    Flag = "One Shot",
     Callback = function(shit)
     if shit then
         _G.oneshot = true
@@ -565,7 +1081,9 @@ end
 
 Combat:AddToggle({
     Name = "BackStabs Only",
-    Default = false,
+    Default = _G.backstab,
+    Save = true,
+    Flag = "BackStabs Only",
     Callback = function(shit)
     if shit then
         _G.backstab = true
@@ -577,7 +1095,9 @@ end
 
 Combat:AddToggle({
     Name = "Kill Aura",
-    Default = false,
+    Default = _G.KillAura,
+    Save = true,
+    Flag = "Kill Aura",
     Callback = function(shit)
     if shit then
         _G.KillAura = true
@@ -647,19 +1167,21 @@ end
 
 Combat:AddToggle({
     Name = "Auto Parry",
-    Default = false,
+    Default = _G.AutoParry,
+    Save = true,
+    Flag = "Auto Parry",
     Callback = function(shit)
     if shit then
-        _G.InfBlock = true
+        _G.AutoParry = true
         task.wait()
         workspace.ServerStuff.initiateblock:FireServer(_G.Code, true)
     else
-        _G.InfBlock = false
+        _G.AutoParry = false
         task.wait()
         workspace.ServerStuff.initiateblock:FireServer(_G.Code, false)
     end 
     --spawn(function()
-        --while _G.InfBlock do task.wait(0.05)
+        --while _G.AutoParry do task.wait(0.05)
             --pcall(function()
                -- workspace.ServerStuff.initiateblock:FireServer(_G.Code, true)
             --end)
@@ -670,7 +1192,9 @@ end
 
 Combat:AddToggle({
     Name = "Auto Shove",
-    Default = false,
+    Default = _G.AutoShove,
+    Save = true,
+    Flag = "Auto Shove",
     Callback = function(shit)
     if shit then
         _G.AutoShove = true
@@ -728,7 +1252,7 @@ _G.Item3Ammo = 9e9
 _G.Item4Ammo = 9e9
 _G.Item5Ammo = 9e9
 
-Spawn:AddParagraph("Stuff before use","This will put you're melee in the second slot so you dont have to drop primary (it will break sometimes and its not fixable)")
+Spawn:AddParagraph("Stuff before use","This will put you're melee in the second slot so you dont have to drop primary (it will break sometimes and its not fixable) also names go by their ids")
 
 Spawn:AddTextbox({
 	Name = "Melee",
@@ -1105,7 +1629,7 @@ mt.__namecall = newcclosure(function(self, ...)
     return namecall(self, table.unpack(args))
 end)
 
--- infblock namecall
+-- AutoParry namecall
 
 local mt = getrawmetatable(game)
 make_writeable(mt)
@@ -1117,7 +1641,7 @@ mt.__namecall = newcclosure(function(self, ...)
 
     if method == "FireServer" and tostring(self) == "initiateblock" then
         if args[2] ~= true then
-            if _G.InfBlock then
+            if _G.AutoParry then
                 args[2] = true
             end    
         end
