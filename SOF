@@ -1,5 +1,31 @@
 pcall(function()
 
+spawn(function()    
+function GetPerkTable()
+    _G.PerkTable = nil
+    for i,v in pairs(getgc(true)) do
+        if type(v) == "table" and rawget(v,"Bld") then
+            _G.PerkTable = v
+        end
+    end
+end
+
+GetPerkTable()
+    
+-- anti client kick
+
+local Player = game.Players.LocalPlayer
+local oldnamecall; oldnamecall = hookmetamethod(game, "__namecall", function(self, ...)
+  local args = {...}
+  local method = getnamecallmethod();
+ 
+  if (method == "Kick" or method == "kick") and self == Player then
+      return wait(9e9);
+  end
+ 
+  return oldnamecall(self, unpack(args))
+end)
+
 -- checks for stats duration
 
 function CheckValue(Name, Value1, Value2, Value3)
@@ -31,6 +57,7 @@ CheckValue(_G.Tinnitus, 50, 0, 0)
 CheckValue(_G.Showdown, 50, 0, 20)
 CheckValue(_G.Armor, 3000, 0, 1500)
 
+
 -- dont edit these
 local S = require(game:GetService("Workspace").ServerStuff:FindFirstChild("Statistics"):FindFirstChild("S_STATISTICS"))
 if _G.timed ~= true then
@@ -46,7 +73,7 @@ if _G.timed ~= true then
     _G.ScsD = S.Scs.dur
     _G.SusD = S.Sus.dur
     _G.BrzD = S.Brz.dur
-    _G.BlsD = S.BlsD.dur
+    _G.BlsD = S.Bls.dur
     _G.ArmD = S.Arm.dur
     _G.MuscleMilkD = S["Muscle Milk"].dur
     _G.Iron4SkinD = S["Iron 4 Skin"].dur
@@ -87,6 +114,8 @@ end)
 end)
 end
 
+end)
+
 function Heal(arg)
     if arg == "One" then
         workspace.ServerStuff.dealDamage:FireServer("Regeneration", nil, _G.Code)
@@ -111,11 +140,23 @@ end)
 
 if _G.Code ~= getrenv()._G.pseed[getrenv()._G.list[workspace.ServerStuff.ask:InvokeServer("mainHandler", true)]] or _G.Code == nil then
     _G.Code = getrenv()._G.pseed[getrenv()._G.list[workspace.ServerStuff.ask:InvokeServer("mainHandler", true)]]
+end 
+
+function DeathStats()
+    workspace.ServerStuff.retrieveStats:InvokeServer()
+    workspace.ServerStuff.ask:InvokeServer("main", false)
 end  
 
 function Respawn()
     workspace.ServerStuff.spawnPlayer:FireServer("respawncharacter")
 end 
+
+function NewRespawn()
+    if game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("endgamegui") then
+        DeathStats()
+    end
+    Respawn()
+end
 
 function Hub()
     workspace.ServerStuff.spawnPlayer:FireServer("hubbing")
@@ -195,7 +236,7 @@ local Match = W1:MakeTab({
 })
 
 local Buff = W1:MakeTab({
-    Name = "Ability Stats",
+    Name = "Perk Stats",
     Icon = "rbxassetid://4483345998", --- rbxassetid://4483345998
     PremiumOnly = false
 })
@@ -209,69 +250,68 @@ local Misc = W1:MakeTab({
 Buff:AddParagraph("Stuff","This shit long and i dont see why u would want to atcually edit these (there are gonna be more options in the future)")
 
 Buff:AddButton({
-    Name = "Update buffs and debuffs",
+    Name = "Update Perks",
     Callback = function()
-        for i,v1 in pairs(getgc(true)) do
-            if type(v1) == "table" and rawget(v1,"Bld") then
-                --rconsolewarn("shit")
-                v1.Bld.dur = _G.Bleed
-                v1.Exp.dur = _G.Expose
-                v1.Crp.dur = _G.Cripple
-                v1.Bnd.dur = _G.Blind
-                v1.Prc.dur = _G.Pierce
-                v1.Psn.dur = _G.Toxin
-                v1.Vcd.dur = _G.Vomit
-                v1.Scs.dur = _G.Sickness
-                v1.Sus.dur = _G.Susceptible
-                v1.Brz.dur = _G.Berserk
-                v1.Bls.dur = _G.BloodThirst
-                v1.Arm.dur = _G.Armor
-                v1["Muscle Milk"].dur = _G.MuscleMilk
-                v1["Iron 4 Skin"].dur = _G.Iron4Skin
-                v1["Lung Butter"].dur = _G.LungButter
-                v1["Speedy Thrusts"].dur = _G.SpeedyThrusts
-                v1.Rgn.dur = _G.Regeneration
-                v1.Pnk.duur = _G.Painkillers
-                v1.Bsg.dur = _G.BlockStagger
-                v1.Snr.dur = _G.Snared
-                v1.Bcn.dur = _G.TrackingBeacon
-                v1.Tnt.dur = _G.Tinnitus
-                v1.Shd.dur = _G.Showdown
-            end
-        end 
+        if _G.PerkTable == nil then
+            GetPerkTable()
+        end
+        --rconsolewarn("Working!")
+        _G.PerkTable.Bld.dur = _G.Bleed
+        _G.PerkTable.Exp.dur = _G.Expose
+        _G.PerkTable.Crp.dur = _G.Cripple
+        _G.PerkTable.Bnd.dur = _G.Blind
+        _G.PerkTable.Prc.dur = _G.Pierce
+        _G.PerkTable.Psn.dur = _G.Toxin
+        _G.PerkTable.Vcd.dur = _G.Vomit
+        _G.PerkTable.Scs.dur = _G.Sickness
+        _G.PerkTable.Sus.dur = _G.Susceptible
+        _G.PerkTable.Brz.dur = _G.Berserk
+        _G.PerkTable.Bls.dur = _G.BloodThirst
+        _G.PerkTable.Arm.dur = _G.Armor
+        _G.PerkTable["Muscle Milk"].dur = _G.MuscleMilk
+        _G.PerkTable["Iron 4 Skin"].dur = _G.Iron4Skin
+        _G.PerkTable["Lung Butter"].dur = _G.LungButter
+        _G.PerkTable["Speedy Thrusts"].dur = _G.SpeedyThrusts
+        _G.PerkTable.Rgn.dur = _G.Regeneration
+        _G.PerkTable.Pnk.dur = _G.Painkillers
+        _G.PerkTable.Bsg.dur = _G.BlockStagger
+        _G.PerkTable.Snr.dur = _G.Snared
+        _G.PerkTable.Bcn.dur = _G.TrackingBeacon
+        _G.PerkTable.Tnt.dur = _G.Tinnitus
+        _G.PerkTable.Shd.dur = _G.Showdown
     end    
 })
 
 Buff:AddButton({
-    Name = "Reset buffs and debuffs",
+    Name = "Reset Perks",
     Callback = function()
-         for i,v1 in pairs(getgc(true)) do
-            if type(v1) == "table" and rawget(v1,"Bld") then
-                v1.Bld.dur = _G.BldD
-                v1.Exp.dur = _G.ExpD
-                v1.Crp.dur = _G.CrpD
-                v1.Bnd.dur = _G.BndD
-                v1.Prc.dur = _G.PrcD
-                v1.Psn.dur = _G.PsnD
-                v1.Vcd.dur = _G.VcdD
-                v1.Scs.dur = _G.ScsD
-                v1.Sus.dur = _G.SusD
-                v1.Brz.dur = _G.BrzD
-                v1.Bls.dur = _G.BlsD
-                v1.Arm.dur = _G.ArmD
-                v1["Muscle Milk"].dur = _G.MuscleMilkD
-                v1["Iron 4 Skin"].dur = _G.Iron4SkinD
-                v1["Lung Butter"].dur = _G.LungButterD
-                v1["Speedy Thrusts"].dur = _G.SpeedyThrustsD
-                v1.Rgn.dur = _G.RgnD
-                v1.Pnk.duur = _G.PnkD
-                v1.Bsg.dur = _G.BsgD
-                v1.Snr.dur = _G.SnrD
-                v1.Bcn.dur = _G.BcnD
-                v1.Tnt.dur = _G.TntD
-                v1.Shd.dur = _G.ShdD
-            end
-        end   
+        if _G.PerkTable == nil then
+            GetPerkTable()
+        end
+        --rconsolewarn("Working!")
+        _G.PerkTable.Bld.dur = _G.BldD
+        _G.PerkTable.Exp.dur = _G.ExpD
+        _G.PerkTable.Crp.dur = _G.CrpD
+        _G.PerkTable.Bnd.dur = _G.BndD
+        _G.PerkTable.Prc.dur = _G.PrcD
+        _G.PerkTable.Psn.dur = _G.PsnD
+        _G.PerkTable.Vcd.dur = _G.VcdD
+        _G.PerkTable.Scs.dur = _G.ScsD
+        _G.PerkTable.Sus.dur = _G.SusD
+        _G.PerkTable.Brz.dur = _G.BrzD
+        _G.PerkTable.Bls.dur = _G.BlsD
+        _G.PerkTable.Arm.dur = _G.ArmD
+        _G.PerkTable["Muscle Milk"].dur = _G.MuscleMilkD
+        _G.PerkTable["Iron 4 Skin"].dur = _G.Iron4SkinD
+        _G.PerkTable["Lung Butter"].dur = _G.LungButterD
+        _G.PerkTable["Speedy Thrusts"].dur = _G.SpeedyThrustsD
+        _G.PerkTable.Rgn.dur = _G.RgnD
+        _G.PerkTable.Pnk.dur = _G.PnkD
+        _G.PerkTable.Bsg.dur = _G.BsgD
+        _G.PerkTable.Snr.dur = _G.SnrD
+        _G.PerkTable.Bcn.dur = _G.BcnD
+        _G.PerkTable.Tnt.dur = _G.TntD
+        _G.PerkTable.Shd.dur = _G.ShdD
     end    
 })
 
@@ -687,7 +727,7 @@ end
 if _G.infstam then
 local InfStamService = game:GetService("RunService").RenderStepped:Connect(function()
     pcall(function()
-        if _G.infstam then
+        if _G.infstam and game.Players.LocalPlayer.Backpack:FindFirstChild("mainHandler") then
             local Players = game:GetService("Players")
             local LocalPlayer = Players.LocalPlayer
             local Backpack = LocalPlayer.Backpack
@@ -747,9 +787,9 @@ if WeaponStats == nil and game.Workspace:FindFirstChild("ServerStuff") and game.
 end
 
 if _G.SimpleGod then
-local SimpleGodService = game:GetService("RunService").RenderStepped:Connect(function()
+local SimpleGodService = game:GetService("RunService").Heartbeat:Connect(function()
     pcall(function()
-        if _G.SimpleGod and game.Players.LocalPlayer.Character.Humanoid.Health ~= game.Players.LocalPlayer.Character.Humanoid.MaxHealth and game.Players.LocalPlayer.Character.Humanoid.MaxHealth < 5000 then
+        if _G.SimpleGod and game.Players.LocalPlayer.Character:FindFirstChild("Humanoid") and game.Players.LocalPlayer.Character.Humanoid.Health ~= 0 and game.Players.LocalPlayer.Character:FindFirstChild("Humanoid") and game.Players.LocalPlayer.Character.Humanoid.Health ~= game.Players.LocalPlayer.Character.Humanoid.MaxHealth and game.Players.LocalPlayer.Character.Humanoid.MaxHealth < 5000 then
             Heal("Full")
         end    
     end)
@@ -780,10 +820,10 @@ function Start(arg)
 end
 
 Combat:AddToggle({
-    Name = "AntiShove (Can't drop)",
+    Name = "Anti Shove (Can't drop)",
     Default = _G.AntiShove,
     Save = true,
-    Flag = "Inf. Wairy",
+    Flag = "Anti Shove",
     Callback = function(shit)
     if shit then
         _G.AntiShove = true
@@ -793,16 +833,13 @@ Combat:AddToggle({
     else
         _G.AntiShove = false
         wait(0.2)
-        require(game:GetService("Workspace").ServerStuff.Statistics["S_STATISTICS"]).Rge.dur = 0
         Start("Waired")
-        task.wait()
-        require(game:GetService("Workspace").ServerStuff.Statistics["S_STATISTICS"]).Rge.dur = 10
     end
     
     spawn(function()
         while _G.AntiShove do task.wait(0.1)
             if game:GetService("Workspace").Camera:FindFirstChild("Bottom") and game.Players.LocalPlayer:FindFirstChild("start").Value ~= "commander" then
-                wait(1)
+                wait(3)
                 Start("UnWaired")
             end
         end
@@ -1143,27 +1180,6 @@ Combat:AddToggle({
 end
 })
 
-function GetTarget()
-    -- Variables
-    local Distance = 10
-    local Closest = false
-    -- Go Through Players
-    for _, A_1 in next, game.Players:GetPlayers() do
-        local Char = A_1.Character
-        -- Player Check
-        if Char and A_1 ~= game.Players.LocalPlayer and Char:FindFirstChild("Head") and Char:FindFirstChild("Humanoid") and Char.Humanoid.Health > 0 and not Char:FindFirstChild("ForceField") then
-            -- Team Check
-                -- Distance Check
-            local New_Distance = game.Players.LocalPlayer:DistanceFromCharacter(Char.Head.Position)
-            if New_Distance < Distance then
-                Distance = New_Distance
-                Closest = Char.HumanoidRootPart.Position
-            end
-        end
-    end
-    return Closest
-end
-
 Combat:AddToggle({
     Name = "Auto Parry",
     Default = _G.AutoParry,
@@ -1190,6 +1206,38 @@ end
 })
 
 Combat:AddToggle({
+    Name = "Anti Block",
+    Default = _G.AntiBlock,
+    Save = true,
+    Flag = "Anti Block",
+    Callback = function(shit)
+    if shit then
+        _G.AntiBlock = true
+    else
+        _G.AntiBlock = false
+    end 
+    spawn(function()  
+        while _G.AntiBlock do wait(0.05)
+            pcall(function()
+                for i,v in pairs(game.Players:GetPlayers()) do
+                    local lp = game.Players.LocalPlayer
+                    local character = v.Character
+                    local charactername = v.Name
+                            
+                    if (lp.Character and lp.Character:FindFirstChild("Head") and character:FindFirstChild("Head") and v ~= game.Players.LocalPlayer) then
+                        local mag = (v.Character.Head.Position - lp.Character.Head.Position).Magnitude
+                        if mag < 15 and character:FindFirstChild("Humanoid").Health > 0 and character:FindFirstChild("activeBlock").Value == true then
+                            character:FindFirstChild("activeBlock").Value = false
+                        end
+                    end
+                end
+            end)
+        end
+    end)      
+end
+})
+
+Combat:AddToggle({
     Name = "Auto Shove",
     Default = _G.AutoShove,
     Save = true,
@@ -1211,7 +1259,7 @@ Combat:AddToggle({
                 
                 if (lp.Character and lp.Character:FindFirstChild("Head") and character:FindFirstChild("Head") and v ~= game.Players.LocalPlayer) then
                     local mag = (v.Character.Head.Position - lp.Character.Head.Position).Magnitude
-                          if mag < 15 and character:FindFirstChild("Humanoid").Health > 0 then
+                          if mag < 15 and character:FindFirstChild("Humanoid").Health > 0 and character:FindFirstChild("activeBlock").Value == true then
                                         
         
             local ohTable1 = {
@@ -1234,6 +1282,138 @@ Combat:AddToggle({
             workspace.ServerStuff.dealDamage:FireServer(ohTable1, ohNil2, ohNumber3)
         end
         end
+        end
+        end)
+        end
+    end)    
+end
+})
+
+function GetTarget()
+    -- Variables
+    local Distance = 50
+    local Closest = false
+    -- Go Through Players
+    for _, A_1 in next, game.Players:GetPlayers() do
+        local Char = A_1.Character
+        -- Player Check
+        if Char and A_1 ~= game.Players.LocalPlayer and Char:FindFirstChild("Head") and Char:FindFirstChild("Humanoid") and Char.Humanoid.Health > 0 and not Char:FindFirstChild("ForceField") then
+                -- Distance Check
+            local New_Distance = game.Players.LocalPlayer:DistanceFromCharacter(Char.Head.Position)
+            if New_Distance < Distance then
+                Distance = New_Distance
+                Closest = Char
+            end
+        end
+    end
+    return Closest
+end
+
+Toggles:AddToggle({
+    Name = "Hidden Noises On Nearbys",
+    Default = _G.HiddenNoises,
+    Save = true,
+    Flag = "Hidden Noises On Nearbys",
+    Callback = function(shit)
+    if shit then
+        _G.HiddenNoises = true
+    else
+        _G.HiddenNoises = false
+    end 
+    spawn(function()  
+        while _G.HiddenNoises do wait(10)
+        pcall(function()
+        local target = GetTarget()
+        if target then
+            local ass = {"taunt1","taunt2","taunt3","taunt4","taunt5"}
+            local ohTable1 = {
+                [1] = "events", -- folder name
+                [2] = "hiddenB",
+            }
+            _G.ohString2 = ass[math.random(#ass)] -- audio
+            local Stringy = _G.ohString2
+            local ohInstance3 = target.HumanoidRootPart
+            for i = 0,1 do            
+                workspace.ServerStuff.playAudio:FireServer(ohTable1, Stringy, ohInstance3)
+            end    
+        end
+        end)
+        end
+    end)    
+end
+})
+
+Toggles:AddToggle({
+    Name = "Alarm On Nearbys",
+    Default = _G.AlarmNoise,
+    Save = true,
+    Flag = "Alarm On Nearbys",
+    Callback = function(shit)
+    if shit then
+        _G.AlarmNoise = true
+    else
+        _G.AlarmNoise = false
+    end 
+    spawn(function()  
+        while _G.AlarmNoise do wait(1)
+        pcall(function()
+        local target = GetTarget()
+        if target and not target:FindFirstChild("beacon") then
+            local ohTable1 = {
+                [1] = "weapons", -- folder name
+                [2] = "ALM",
+            }
+            local Stringy = "beacon"
+            local ohInstance3 = target.HumanoidRootPart
+            for i = 0,2 do            
+                workspace.ServerStuff.playAudio:FireServer(ohTable1, Stringy, ohInstance3)
+            end   
+        end
+        end)
+        end
+    end)    
+end
+})
+
+Toggles:AddToggle({
+    Name = "Tase Nearby",
+    Default = _G.TaseNearby,
+    Save = true,
+    Flag = "Tase Nearby",
+    Callback = function(shit)
+    if shit then
+        _G.TaseNearby = true
+    else
+        _G.TaseNearby = false
+    end 
+    spawn(function()  
+        while _G.TaseNearby do wait(0.1)
+        pcall(function()
+        for i,v in pairs(game.Players:GetPlayers()) do
+        
+            local lp = game.Players.LocalPlayer
+            local character = v.Character
+            local charactername = v.Name
+                
+            if (lp.Character and lp.Character:FindFirstChild("Head") and character:FindFirstChild("Head") and v ~= game.Players.LocalPlayer) then
+                local mag = (v.Character.Head.Position - lp.Character.Head.Position).Magnitude
+                if mag < 25 and character:FindFirstChild("Humanoid").Health > 0 and not character:FindFirstChild("Head"):FindFirstChild("vomitBlock") then
+                    local ohTable1 = {
+                        [1] = "meleedamage",
+                        [2] = character,
+                        [3] = "taser",
+                        [4] = false,
+                        [5] = "Taser",
+                        [6] = false,
+                        [7] = false,
+                        [8] = {}
+                    }
+                    local ohNil2 = nil
+                    local ohNumber3 = _G.Code
+                            
+                    workspace.ServerStuff.dealDamage:FireServer(ohTable1, ohNil2, ohNumber3) 
+                end
+            end
         end
         end)
         end
@@ -1500,7 +1680,7 @@ end
 })
 
 function Spawn(Cords)
-    Respawn()
+    NewRespawn()
     repeat task.wait() until not game.Players.LocalPlayer.Character:FindFirstChild("Outfit")
     Hub()
     Start("Normal")
@@ -1513,7 +1693,7 @@ function Spawn(Cords)
         game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame = CFrame.new(-118.72508239746094, -22.03114128112793, 1088.935546875)
     elseif Cords == "Respawn" then
         game.Players.LocalPlayer.start.Value = ""
-        Respawn()
+        NewRespawn()
     elseif Cords == "HubB" then
         game.Players.LocalPlayer.start.Value = ""
         game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame = CFrame.new(-118.72508239746094, -22.03114128112793, 1088.935546875)
@@ -1521,7 +1701,7 @@ function Spawn(Cords)
 end
 
 Match:AddButton({
-    Name = "Fix Character (Wont fix permanent death screen)",
+    Name = "Fix Character",
     Callback = function()
         Spawn("Respawn")
     end
